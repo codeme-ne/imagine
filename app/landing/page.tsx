@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
   title: "URL → Image | Turn any website into a beautiful image with AI",
@@ -48,21 +49,14 @@ export default function LandingPage() {
               <h1 className="text-4xl md:text-5xl font-semibold tracking-tight text-foreground">Turn any URL into a scroll‑stopping image</h1>
               <p className="mt-4 text-base md:text-lg text-muted-foreground">Stop wrestling with design tools. Paste a link, pick a style, and get a clean, on‑brand image for your landing page, social posts, or product updates.</p>
               <div className="mt-6 flex flex-wrap items-center gap-3">
-                <Link
-                  href="/"
-                  className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:opacity-90"
-                >
-                  Generate from a URL
-                </Link>
-                <a
-                  href="#how-it-works"
-                  className="inline-flex h-10 items-center justify-center rounded-md border border-input bg-background px-4 text-sm font-medium text-foreground transition-colors hover:bg-muted"
-                >
-                  How it works
-                </a>
+                <Button asChild>
+                  <Link href="/">Generate from a URL</Link>
+                </Button>
+                <Button asChild variant="outline">
+                  <a href="#how-it-works">How it works</a>
+                </Button>
               </div>
               <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-                <span className="inline-flex items-center gap-1">⚡ No sign‑up</span>
                 <span className="inline-flex items-center gap-1">🔒 Keys stay on your device when pasted</span>
                 <span className="inline-flex items-center gap-1">🪄 Ghibli / LEGO / Claymation presets</span>
               </div>
@@ -148,7 +142,9 @@ export default function LandingPage() {
             ))}
           </ol>
           <div className="mt-6 flex items-center gap-3">
-            <Link href="/" className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:opacity-90">Try it now</Link>
+            <Button asChild>
+              <Link href="/">Try it now</Link>
+            </Button>
             <span className="text-xs text-muted-foreground">It usually takes ~5–10 seconds.</span>
           </div>
         </div>
@@ -211,7 +207,11 @@ export default function LandingPage() {
                 <li>Gemini 2.5 Flash for concise, on‑brand prompts</li>
                 <li>Google Imagen 4 (via Fal.ai) for high‑quality renders</li>
               </ul>
-              <Link href="/" className="mt-5 inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:opacity-90">Generate from a URL</Link>
+              <div className="mt-5">
+                <Button asChild>
+                  <Link href="/">Generate from a URL</Link>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
