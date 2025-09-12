@@ -44,7 +44,7 @@ Turn any website into a beautiful image using [Firecrawl](https://www.firecrawl.
 
 ## How It Works
 
-1. Enter a website URL → Extract content with Firecrawl → Generate prompt with Gemini-2.5-Flash → Select style → Create image with Imagen 4 → Download
+Enter a website URL → Extract content with Firecrawl → Generate prompt with Gemini-2.5-Flash → Select style → Create image with Imagen 4 → Download
 
 ## License
 
