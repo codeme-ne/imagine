@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json() as ScrapeRequestBody;
     const { url, urls, ...params } = body;
 
-    let result: ScrapeResult;
+    let result: ScrapeResult | null | undefined;
 
     if (url && typeof url === 'string') {
       result = await app.scrapeUrl(url, params) as ScrapeResult;
@@ -63,13 +63,47 @@ export async function POST(request: NextRequest) {
     } else {
       return NextResponse.json({ success: false, error: 'Invalid request format. Please check your input and try again.' }, { status: 400 });
     }
-    
-    return NextResponse.json(result);
+
+    // Ensure we never return an empty body. Some SDK failures can yield undefined/null without throwing.
+    if (!result || typeof result !== 'object') {
+      return NextResponse.json(
+        { success: false, error: 'Empty response from Firecrawl. Please try again later.' },
+        { status: 502 }
+      );
+    }
+
+    // If the SDK indicates failure, propagate a structured error
+    if ('success' in result && (result as ScrapeResult).success === false) {
+      const message = (result as ScrapeResult).error || 'Firecrawl request failed.';
+      return NextResponse.json(
+        { success: false, error: message },
+        { status: 502 }
+      );
+    }
+
+    return NextResponse.json(result as ScrapeResult);
 
   } catch (error: unknown) {
     console.error('Error in /api/scrape endpoint (SDK):', error);
     const err = error as ApiError;
-    const errorStatus = typeof err.status === 'number' ? err.status : 500;
-    return NextResponse.json({ success: false, error: 'An error occurred while processing your request. Please try again later.' }, { status: errorStatus });
+    const rawMessage = (err && typeof err.message === 'string') ? err.message : '';
+
+    // Heuristic mapping for common Firecrawl quota/credits/rate errors
+    const isQuota = /quota|credit|payment required|402/i.test(rawMessage);
+    const isRateLimit = /rate.?limit|too many requests|429/i.test(rawMessage);
+
+    const errorStatus = isQuota
+      ? 402
+      : isRateLimit
+        ? 429
+        : (typeof err.status === 'number' && err.status >= 400 ? err.status : 502);
+
+    const errorMessage = isQuota
+      ? 'Firecrawl credits exhausted. Add credits or provide a key with available quota.'
+      : isRateLimit
+        ? 'Firecrawl rate limit reached. Please try again shortly.'
+        : 'An error occurred while processing your request. Please try again later.';
+
+    return NextResponse.json({ success: false, error: errorMessage }, { status: errorStatus });
   }
 } 

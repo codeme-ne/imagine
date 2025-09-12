@@ -238,9 +238,31 @@ export default function UrlToImagePage() {
         headers,
         body: JSON.stringify({ url, formats: ['markdown'] })
       });
+      const ct = scrapeResponse.headers.get('content-type') || '';
       if (!scrapeResponse.ok) {
-        const errData = await scrapeResponse.json() as ScrapeResponse;
-        throw new Error(errData.error || `Scraping failed with status: ${scrapeResponse.status}`);
+        let message = `Scraping failed with status: ${scrapeResponse.status}`;
+        try {
+          if (ct.includes('application/json')) {
+            const errData = await scrapeResponse.json() as ScrapeResponse;
+            message = errData.error || message;
+          } else {
+            const text = await scrapeResponse.text();
+            if (text) message = text;
+          }
+        } catch {
+          // Fallback to text if JSON parsing fails or body already consumed
+          try {
+            const text = await scrapeResponse.text();
+            if (text) message = text;
+          } catch {
+            // ignore
+          }
+        }
+        throw new Error(message);
+      }
+      if (!ct.includes('application/json')) {
+        const text = await scrapeResponse.text();
+        throw new Error(text || 'Unexpected non-JSON response from scrape API.');
       }
       const scrapeData = await scrapeResponse.json() as ScrapeResponse;
       // Check for markdown directly at the top level or under data object
