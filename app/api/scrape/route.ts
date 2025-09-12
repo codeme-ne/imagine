@@ -87,12 +87,17 @@ export async function POST(request: NextRequest) {
       // Support both newer SDK (v4: .scrape) and older SDK (v1: .scrapeUrl)
       const anyApp = app as unknown as Record<string, unknown>;
       try {
-        if (typeof anyApp.scrape === 'function') {
-          result = await (anyApp.scrape as Function)(url, params) as ScrapeResult;
-        } else if (typeof anyApp.scrapeUrl === 'function') {
-          result = await (anyApp.scrapeUrl as Function)(url, params) as ScrapeResult;
-        } else if (anyApp.v1 && typeof (anyApp.v1 as Record<string, unknown>).scrapeUrl === 'function') {
-          result = await ((anyApp.v1 as Record<string, unknown>).scrapeUrl as Function)(url, params) as ScrapeResult;
+        const scrapeV4 = anyApp.scrape as ((u: string, p?: Record<string, unknown>) => Promise<ScrapeResult>) | undefined;
+        const scrapeV1 = anyApp.scrapeUrl as ((u: string, p?: Record<string, unknown>) => Promise<ScrapeResult>) | undefined;
+        const v1 = anyApp.v1 as Record<string, unknown> | undefined;
+        const scrapeV1Ns = v1 ? (v1.scrapeUrl as ((u: string, p?: Record<string, unknown>) => Promise<ScrapeResult>) | undefined) : undefined;
+
+        if (typeof scrapeV4 === 'function') {
+          result = await scrapeV4(url, params);
+        } else if (typeof scrapeV1 === 'function') {
+          result = await scrapeV1(url, params);
+        } else if (typeof scrapeV1Ns === 'function') {
+          result = await scrapeV1Ns(url, params);
         } else {
           throw new Error('Firecrawl SDK method not found (expected scrape or scrapeUrl)');
         }
@@ -105,12 +110,17 @@ export async function POST(request: NextRequest) {
       }
     } else if (urls && Array.isArray(urls)) {
       const anyApp = app as unknown as Record<string, unknown>;
-      if (typeof anyApp.batchScrape === 'function') {
-        result = await (anyApp.batchScrape as Function)(urls, params) as ScrapeResult;
-      } else if (typeof anyApp.batchScrapeUrls === 'function') {
-        result = await (anyApp.batchScrapeUrls as Function)(urls, params) as ScrapeResult;
-      } else if (anyApp.v1 && typeof (anyApp.v1 as Record<string, unknown>).batchScrapeUrls === 'function') {
-        result = await ((anyApp.v1 as Record<string, unknown>).batchScrapeUrls as Function)(urls, params) as ScrapeResult;
+      const batchScrapeV4 = anyApp.batchScrape as ((uu: string[], p?: Record<string, unknown>) => Promise<ScrapeResult>) | undefined;
+      const batchScrapeV1 = anyApp.batchScrapeUrls as ((uu: string[], p?: Record<string, unknown>) => Promise<ScrapeResult>) | undefined;
+      const v1 = anyApp.v1 as Record<string, unknown> | undefined;
+      const batchScrapeV1Ns = v1 ? (v1.batchScrapeUrls as ((uu: string[], p?: Record<string, unknown>) => Promise<ScrapeResult>) | undefined) : undefined;
+
+      if (typeof batchScrapeV4 === 'function') {
+        result = await batchScrapeV4(urls, params);
+      } else if (typeof batchScrapeV1 === 'function') {
+        result = await batchScrapeV1(urls, params);
+      } else if (typeof batchScrapeV1Ns === 'function') {
+        result = await batchScrapeV1Ns(urls, params);
       } else {
         throw new Error('Firecrawl SDK method not found (expected batchScrape or batchScrapeUrls)');
       }
