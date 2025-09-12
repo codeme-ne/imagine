@@ -1,4 +1,4 @@
 {
-  "packageManager": "pnpm@10",
+  "version": 2,
   "installCommand": "pnpm install --no-frozen-lockfile"
 }
