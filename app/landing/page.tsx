@@ -2,11 +2,17 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Flame } from "lucide-react";
+import { Bot } from "lucide-react";
+import { ImagePlus } from "lucide-react"; 
+import { FileJson } from "lucide-react";
+import { SignUpButton } from "@clerk/nextjs";
+
 
 export const metadata: Metadata = {
-  title: "URL → Image | Turn any website into a beautiful image with AI",
+  title: "Stop Wrestling With Canva and Figma | URL → Image",
   description:
-    "Paste a URL and get a share‑ready image. We extract content with Firecrawl, craft a concise prompt with Gemini 2.5 Flash, and render with Google Imagen 4.",
+    "Create on-brand posts in minutes—save hours each week and cut freelancer/tool costs. We extract content with Firecrawl, craft concise prompts with Gemini 2.5 Flash, and render with Google Imagen 4.",
 };
 
 export default function LandingPage() {
@@ -45,20 +51,16 @@ export default function LandingPage() {
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 md:grid-cols-2 md:items-center">
             <div>
-              <p className="mb-3 inline-flex items-center rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">New • Firecrawl + Gemini + Imagen 4</p>
-              <h1 className="text-4xl md:text-5xl font-semibold tracking-tight text-foreground">Turn any URL into a scroll‑stopping image</h1>
-              <p className="mt-4 text-base md:text-lg text-muted-foreground">Stop wrestling with design tools. Paste a link, pick a style, and get a clean, on‑brand image for your landing page, social posts, or product updates.</p>
-              <div className="mt-6 flex flex-wrap items-center gap-3">
-                <Button asChild>
-                  <Link href="/">Generate from a URL</Link>
-                </Button>
-                <Button asChild variant="outline">
-                  <a href="#how-it-works">How it works</a>
-                </Button>
+              <h1 className="text-4xl md:text-5xl font-semibold tracking-tight text-foreground">Stop Wrestling With Canva and Figma.</h1>
+              <p className="mt-4 text-base md:text-lg text-muted-foreground">Create on-brand posts in minutes—save hours each week and cut freelancer/tool costs with AI built for SMB marketing managers.</p>
+              <div className="mt-4 flex flex-wrap items-center gap-3">
+                <SignUpButton>
+                  <Button variant="outline" className="cursor-pointer">Sign up now</Button>
+                </SignUpButton>
               </div>
               <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
                 <span className="inline-flex items-center gap-1">🔒 Keys stay on your device when pasted</span>
-                <span className="inline-flex items-center gap-1">🪄 Ghibli / LEGO / Claymation presets</span>
+                <span className="inline-flex items-center gap-1">🪄 Ghibli, LEGO, Claymation, Logo, Whimsical, Sumi‑e presets</span>
               </div>
             </div>
 
@@ -79,19 +81,19 @@ export default function LandingPage() {
       <section className="px-6 md:px-8 py-6">
         <div className="mx-auto max-w-6xl grid grid-cols-2 sm:grid-cols-4 gap-6 items-center opacity-80">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Image src="/firecrawl-logo.svg" alt="Firecrawl" width={24} height={24} />
+            <Flame className="h-5 w-5 text-orange-500" />
             <span>Firecrawl</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Image src="/globe.svg" alt="Gemini" width={24} height={24} />
+            <Bot className="h-5 w-5 text-blue-500" />
             <span>Gemini 2.5 Flash</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Image src="/window.svg" alt="Imagen 4" width={24} height={24} />
+            <ImagePlus className="h-5 w-5 text-red-500" />
             <span>Imagen 4 (Fal.ai)</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Image src="/assets/twemoji-fire.svg" alt="Next.js" width={20} height={20} />
+            <FileJson className="h-5 w-5 text-black" />
             <span>Next.js 15</span>
           </div>
         </div>
@@ -142,7 +144,7 @@ export default function LandingPage() {
             ))}
           </ol>
           <div className="mt-6 flex items-center gap-3">
-            <Button asChild>
+            <Button asChild variant="outline" >
               <Link href="/">Try it now</Link>
             </Button>
             <span className="text-xs text-muted-foreground">It usually takes ~5–10 seconds.</span>
@@ -157,11 +159,17 @@ export default function LandingPage() {
             Style presets included
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            Choose from curated looks like Ghibli, LEGO, and Claymation—or bring your own prompt.
+            Choose from curated looks like Ghibli, LEGO, Claymation, Logo, Whimsical, and Sumi‑e—or bring your own prompt.
           </p>
           <div className="mt-6 grid gap-6 sm:grid-cols-3">
-            {[{ src: "/url-to-image/1.png", label: "Ghibli" }, { src: "/url-to-image/2.png", label: "LEGO" }, { src: "/url-to-image/3.png", label: "Claymation" }].map(
-              (item) => (
+            {[
+              { src: "/url-to-image/1.png", label: "Ghibli" },
+              { src: "/url-to-image/2.png", label: "LEGO" },
+              { src: "/url-to-image/3.png", label: "Claymation" },
+              { src: "/url-to-image/hero_main.png", label: "Logo" },
+              { src: "/url-to-image/1.png", label: "Whimsical" },
+              { src: "/url-to-image/3.png", label: "Sumi‑e Ink Wash" },
+            ].map((item) => (
                 <figure key={item.label} className="overflow-hidden rounded-xl border bg-muted">
                   <div className="relative aspect-[4/3]">
                     <Image src={item.src} alt={item.label} fill className="object-cover" />
@@ -187,7 +195,7 @@ export default function LandingPage() {
                 </div>
                 <div>
                   <p className="font-medium text-foreground">What styles are available?</p>
-                  <p>We include curated presets (Ghibli, LEGO, Claymation). You can also tweak the prompt for custom looks.</p>
+                  <p>We include curated presets (Ghibli, LEGO, Claymation, Logo, Whimsical, Sumi‑e). You can also tweak the prompt for custom looks.</p>
                 </div>
                 <div>
                   <p className="font-medium text-foreground">Is there a limit?</p>

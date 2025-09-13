@@ -42,16 +42,16 @@ export default function RootLayout({
             <div className="mx-auto max-w-6xl flex items-center justify-end gap-2">
               <SignedOut>
                 <SignInButton>
-                  <Button variant="outline">Sign in</Button>
+                  <Button variant="outline" className="cursor-pointer">Sign in</Button>
                 </SignInButton>
                 <SignUpButton>
-                  <Button>Sign up</Button>
+                  <Button className="cursor-pointer">Sign up</Button>
                 </SignUpButton>
               </SignedOut>
               <SignedIn>
                 <div className="flex items-center gap-2">
                   <SignOutButton>
-                    <Button variant="outline">Sign out</Button>
+                    <Button variant="outline" className="cursor-pointer">Sign out</Button>
                   </SignOutButton>
                   <UserButton />
                 </div>
