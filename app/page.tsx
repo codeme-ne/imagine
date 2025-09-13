@@ -50,13 +50,12 @@ const imageStyleOptions: ImageStyle[] = [
     alt: "Claymation style",
     prompt: "1. Clay-like texture\n2. Stop-motion aesthetic\n3. Slightly imperfect surfaces"
   },
-  // New styles
   {
     id: "style4",
     name: "LOGO",
     src: "/url-to-image/hero_main.png",
     alt: "Clean vector art logo style",
-    prompt: "1. Clean vector art logo illustration\n2. Flat colors, bold geometric shapes, minimal shading\n3. Crisp edges, high contrast, ample negative space"
+    prompt: "1. Clean vector art logo\n2. Flat colors, minimal shading\n3. Bold geometric shapes"
   },
   {
     id: "style5",
