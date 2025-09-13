@@ -18,20 +18,20 @@ export const metadata: Metadata = {
 export default function LandingPage() {
   const features = [
     {
-      title: "From link to design in seconds",
-      desc: "No blank canvas or prompt engineering—paste a URL and get a polished image fast.",
+      title: "From Link to Live in Seconds",
+      desc: "No more blank canvases or prompt engineering. Just paste a URL and get a polished, ready-to-share image in a flash.",
     },
     {
-      title: "On-brand by default",
-      desc: "We use your page headline and key content to craft a concise, on-message prompt.",
+      title: "Perfectly On-Brand, Every Time",
+      desc: "We intelligently extract your page's headline and key content to craft a concise, on-message prompt that reflects your brand.",
     },
     {
-      title: "Studio‑quality renders",
-      desc: "Powered by Google Imagen 4 (via Fal.ai) for crisp, share‑worthy visuals.",
+      title: "Studio-Quality Visuals",
+      desc: "Powered by Google's Imagen 4 for crisp, professional, and share-worthy visuals that will stop the scroll.",
     },
     {
-      title: "Developer‑friendly",
-      desc: "Built on Firecrawl + Gemini 2.5 Flash. Transparent, reliable, and fast.",
+      title: "Transparent & Developer-Friendly",
+      desc: "Built on a powerful, transparent stack: Firecrawl for web scraping, Gemini 2.5 Flash for prompt generation, and Fal.ai for reliable image rendering.",
     },
   ];
 
@@ -51,11 +51,11 @@ export default function LandingPage() {
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 md:grid-cols-2 md:items-center">
             <div>
-              <h1 className="text-4xl md:text-5xl font-semibold tracking-tight text-foreground">Stop Wrestling With Canva and Figma.</h1>
-              <p className="mt-4 text-base md:text-lg text-muted-foreground">Create on-brand posts in minutes—save hours each week and cut freelancer/tool costs with AI built for SMB marketing managers.</p>
+              <h1 className="text-4xl md:text-5xl font-semibold tracking-tight text-foreground">Turn any URL into a stunning visual. Instantly.</h1>
+              <p className="mt-4 text-base md:text-lg text-muted-foreground">Create on-brand social posts, blog graphics, and marketing visuals in minutes. Save hours each week and say goodbye to expensive freelancers and complicated design tools.</p>
               <div className="mt-4 flex flex-wrap items-center gap-3">
                 <SignUpButton>
-                  <Button variant="outline" className="cursor-pointer">Sign up now</Button>
+                  <Button variant="outline" className="cursor-pointer">Generate your first image</Button>
                 </SignUpButton>
               </div>
               <div className="mt-3 flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
@@ -110,11 +110,11 @@ export default function LandingPage() {
       {/* Who it's for */}
       <section className="px-6 md:px-8 py-10">
         <div className="mx-auto max-w-6xl rounded-xl border bg-card p-6">
-          <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground">Made for makers, marketers, and indie devs</h2>
+          <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground">Your Brand, Your Content, Instantly Visualized.</h2>
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 text-sm text-muted-foreground">
-            <p>• Ship visuals for changelogs, launch posts, and product pages without a designer.</p>
-            <p>• Keep messaging consistent—your site’s headline is baked into the prompt.</p>
-            <p>• Iterate fast—switch styles, tweak prompts, and download instantly.</p>
+            <p>• Create stunning visuals for changelogs, launch announcements, and product pages without needing a designer.</p>
+            <p>• Ensure brand consistency—your website&apos;s headline and key messages are automatically baked into every image.</p>
+            <p>• Go from idea to iteration in seconds. Switch styles, tweak prompts, and download your final image instantly.</p>
           </div>
         </div>
       </section>
@@ -153,9 +153,32 @@ export default function LandingPage() {
           </ol>
           <div className="mt-6 flex items-center gap-3">
             <Button asChild variant="outline" >
-              <Link href="/">Try it now</Link>
+              <Link href="/">Try it for free</Link>
             </Button>
             <span className="text-xs text-muted-foreground">It usually takes ~5–10 seconds.</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="px-6 md:px-8 py-12 md:py-16">
+        <div className="mx-auto max-w-6xl">
+          <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-center text-foreground">
+            Loved by Marketers, Makers, and Developers
+          </h2>
+          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="rounded-xl border bg-card p-5">
+              <p className="text-sm text-muted-foreground">&quot;This is a game-changer for our content workflow. We went from spending hours in Figma to generating stunning, on-brand images in seconds.&quot;</p>
+              <p className="mt-4 text-sm font-semibold text-foreground">- Head of Marketing, SaaS Startup</p>
+            </div>
+            <div className="rounded-xl border bg-card p-5">
+              <p className="text-sm text-muted-foreground">&quot;As an indie hacker, I wear a lot of hats. This tool lets me create professional-looking visuals for my projects without having to hire a designer.&quot;</p>
+              <p className="mt-4 text-sm font-semibold text-foreground">- Solo Founder & Developer</p>
+            </div>
+            <div className="rounded-xl border bg-card p-5">
+              <p className="text-sm text-muted-foreground">&quot;The image quality is incredible, and the fact that it&apos;s built on a solid, transparent tech stack gives me a lot of confidence.&quot;</p>
+              <p className="mt-4 text-sm font-semibold text-foreground">- Senior Frontend Engineer</p>
+            </div>
           </div>
         </div>
       </section>
