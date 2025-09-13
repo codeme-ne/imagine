@@ -53,21 +53,21 @@ const imageStyleOptions: ImageStyle[] = [
   {
     id: "style4",
     name: "LOGO",
-    src: "/url-to-image/hero_main.png",
+    src: "/url-to-image/4.png",
     alt: "Clean vector art logo style",
-    prompt: "1. Clean vector art logo\n2. Flat colors, minimal shading\n3. Bold geometric shapes"
+    prompt: "1. Clean vector art logo\n2. Flat colors\n3. Bold geometric shapes"
   },
   {
     id: "style5",
     name: "WHIMSICAL",
-    src: "/url-to-image/1.png",
+    src: "/url-to-image/5.png",
     alt: "Whimsical illustration style",
-    prompt: "1. Whimsical storybook illustration\n2. Playful shapes, gentle curves, exaggerated proportions\n3. Soft pastel palette, hand-drawn textures"
+    prompt: "1. Whimsical storybook illustration\n2. Soft pastel palette\n3. Playful shapes"
   },
   {
     id: "style6",
     name: "SUMI-E INK WASH",
-    src: "/url-to-image/3.png",
+    src: "/url-to-image/6.png",
     alt: "Traditional sumi-e ink wash style",
     prompt: "1. Traditional sumi-e ink wash style\n2. Stark contrasts between deep blacks and untouched whites\n3. Balanced and contemplative composition"
   },

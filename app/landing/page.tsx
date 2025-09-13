@@ -47,7 +47,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen">
       {/* Hero */}
-      <section className="px-6 md:px-8 pt-16 md:pt-24 pb-10 md:pb-16">
+      <section className="px-6 md:px-8 pt-16 md:pt-24 pb-6 md:pb-8">
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 md:grid-cols-2 md:items-center">
             <div>
@@ -58,9 +58,17 @@ export default function LandingPage() {
                   <Button variant="outline" className="cursor-pointer">Sign up now</Button>
                 </SignUpButton>
               </div>
-              <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-                <span className="inline-flex items-center gap-1">🔒 Keys stay on your device when pasted</span>
-                <span className="inline-flex items-center gap-1">🪄 Ghibli, LEGO, Claymation, Logo, Whimsical, Sumi‑e presets</span>
+              <div className="mt-3 flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
+                {["Ghibli", "LEGO", "Claymation", "Logo", "Whimsical", "Sumi-e"].map(
+                  (style, index, arr) => (
+                    <span key={style} className="flex items-center gap-x-2">
+                      {style}
+                      {index < arr.length - 1 && (
+                        <span className="opacity-50">•</span>
+                      )}
+                    </span>
+                  ),
+                )}
               </div>
             </div>
 
@@ -166,15 +174,15 @@ export default function LandingPage() {
               { src: "/url-to-image/1.png", label: "Ghibli" },
               { src: "/url-to-image/2.png", label: "LEGO" },
               { src: "/url-to-image/3.png", label: "Claymation" },
-              { src: "/url-to-image/hero_main.png", label: "Logo" },
-              { src: "/url-to-image/1.png", label: "Whimsical" },
-              { src: "/url-to-image/3.png", label: "Sumi‑e Ink Wash" },
+              { src: "/url-to-image/4.png", label: "Logo" },
+              { src: "/url-to-image/5.png", label: "Whimsical" },
+              { src: "/url-to-image/6.png", label: "Sumi‑e Ink Wash" },
             ].map((item) => (
                 <figure key={item.label} className="overflow-hidden rounded-xl border bg-muted">
-                  <div className="relative aspect-[4/3]">
+                  <div className="relative aspect-[17/16]">
                     <Image src={item.src} alt={item.label} fill className="object-cover" />
                   </div>
-                  <figcaption className="p-3 text-center text-sm text-muted-foreground">{item.label} preset</figcaption>
+                  <figcaption className="p-3 text-center text-sm text-muted-foreground">{item.label} </figcaption>
                 </figure>
               )
             )}
