@@ -46,6 +46,17 @@ Turn any website into a beautiful image using [Firecrawl](https://www.firecrawl.
 
 Enter a website URL → Extract content with Firecrawl → Generate prompt with Gemini-2.5-Flash → Select style → Create image with Imagen 4 → Download
 
+### Built-in Image Styles
+
+The app ships with several preset style prompts (click “View Prompt” in Step 2):
+
+- GHIBLI
+- LEGO
+- CLAYMATION
+- Clean vector art illustration Logo
+- Whimsical illustration
+- traditional Sumi-e ink wash style
+
 ## License
 
 MIT License

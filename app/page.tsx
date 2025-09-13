@@ -50,6 +50,28 @@ const imageStyleOptions: ImageStyle[] = [
     alt: "Claymation style",
     prompt: "1. Clay-like texture\n2. Stop-motion aesthetic\n3. Slightly imperfect surfaces"
   },
+  // New styles
+  {
+    id: "style4",
+    name: "LOGO",
+    src: "/url-to-image/hero_main.png",
+    alt: "Clean vector art logo style",
+    prompt: "1. Clean vector art logo illustration\n2. Flat colors, bold geometric shapes, minimal shading\n3. Crisp edges, high contrast, ample negative space"
+  },
+  {
+    id: "style5",
+    name: "WHIMSICAL",
+    src: "/url-to-image/1.png",
+    alt: "Whimsical illustration style",
+    prompt: "1. Whimsical storybook illustration\n2. Playful shapes, gentle curves, exaggerated proportions\n3. Soft pastel palette, hand-drawn textures"
+  },
+  {
+    id: "style6",
+    name: "SUMI-E INK WASH",
+    src: "/url-to-image/3.png",
+    alt: "Traditional sumi-e ink wash style",
+    prompt: "1. Traditional sumi-e ink wash style\n2. Stark contrasts between deep blacks and untouched whites\n3. Balanced and contemplative composition"
+  },
 ];
 
 // Add proper interface for the error type at the top of the file
@@ -613,7 +635,7 @@ The final prompt should read naturally as ONE complete instruction, not a list o
                 <div className="flex gap-2 mb-4">
                   <Input
                     type="url"
-                    placeholder="example.com"
+                    placeholder=""
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
                     className="flex-grow [&::placeholder]:text-gray-300 dark:[&::placeholder]:text-gray-500"
