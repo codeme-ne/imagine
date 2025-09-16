@@ -104,39 +104,20 @@ interface StreamingChunk {
   textDelta?: string;
 }
 
-// ProgressBar Component (adapted from lead-enrichment page)
+// Simple Progress Bar Component
 const UrlToImageProgressBar = ({ activeStep }: { activeStep: number }) => {
-  const steps = [
-    { number: 1, title: "Enter URL" },
-    { number: 2, title: "Select Style" },
-    { number: 3, title: "Website Content" },
-    { number: 4, title: "Generate Prompt" },
-    { number: 5, title: "Generate Image" },
-    { number: 6, title: "View Image" },
-  ];
-
   return (
-    <section className="mb-10 pt-2 sm:pt-4">
-      <div className="w-full flex justify-between items-center mb-3 sm:mb-4">
-        {steps.map((step, index, arr) => (
-          <React.Fragment key={step.number}>
-            <div className="flex flex-col items-center">
-              <div
-                className={`h-8 w-8 sm:h-10 sm:w-10 rounded-full flex items-center justify-center font-bold text-md sm:text-lg transition-colors duration-300 ${activeStep >= step.number ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}
-              >
-                {step.number}
-              </div>
-              <span className={`text-xs sm:text-sm mt-1.5 sm:mt-2 transition-colors duration-300 ${activeStep >= step.number ? "text-foreground font-semibold" : "text-muted-foreground"}`}>
-                {step.title}
-              </span>
-            </div>
-            {index < arr.length - 1 && (
-              <div className={`relative bottom-2 sm:bottom-3 h-1 flex-1 transition-colors duration-300 mx-2 sm:mx-3 ${activeStep > step.number ? "bg-primary" : "bg-muted"}`}></div>
-            )}
-          </React.Fragment>
-        ))}
+    <div className="mb-8">
+      <div className="flex items-center justify-center space-x-2 mb-2">
+        <span className="text-sm text-muted-foreground">Step {activeStep} of 6</span>
       </div>
-    </section>
+      <div className="w-full bg-muted rounded-full h-2">
+        <div
+          className="bg-primary h-2 rounded-full transition-all duration-300 ease-in-out"
+          style={{ width: `${(activeStep / 6) * 100}%` }}
+        />
+      </div>
+    </div>
   );
 };
 
@@ -560,22 +541,6 @@ The final prompt should read naturally as ONE complete instruction, not a list o
 
   return (
   <div className="px-4 sm:container py-6 sm:py-10 max-w-3xl mx-auto font-sans">
-      
-
-      <div className="text-center mb-10">
-  <h1 className="text-[2.5rem] lg:text-[3.8rem] text-center text-foreground dark:text-zinc-100 font-semibold tracking-tight leading-[1.2] mt-4 opacity-0 animate-fade-up [animation-duration:var(--d-3)] [animation-delay:var(--t-1)]">
-          Turn any Website into<br />
-          <span className="block leading-[1.3] opacity-0 animate-fade-up [animation-duration:var(--d-3)] [animation-delay:var(--t-2)]">
-            <span className="relative px-1 text-transparent bg-clip-text bg-gradient-to-tr from-sky-500 to-cyan-400 inline-flex justify-center items-center">
-              a Stunning Image
-            </span>
-          </span>
-        </h1>
-        <p className="text-muted-foreground max-w-xl mx-auto mt-4">
-          Enter a website URL, choose an image style, and watch as we extract
-          the content and transform it into a beautiful image.
-        </p>
-      </div>
 
       {/* Show loading state while checking environment */}
       {isCheckingEnv ? (
@@ -648,22 +613,6 @@ The final prompt should read naturally as ONE complete instruction, not a list o
                     )}
                   </Button>
                 </div>
-
-                {hasApiKey && (
-                  <div className="mt-4">
-                    <Button
-                      variant="code"
-                      size="sm"
-                      onClick={() => {
-                        setHasApiKey(false);
-                        setFirecrawlApiKey("");
-                        localStorage.removeItem('firecrawl_api_key');
-                      }}
-                    >
-                      Change API Key
-                    </Button>
-                  </div>
-                )}
               </div>
             )}
 
@@ -984,19 +933,6 @@ The final prompt should read naturally as ONE complete instruction, not a list o
               </div>
             )}
           </div>
-
-          <footer className="mt-12 text-center text-sm text-muted-foreground">
-            <p>
-              Powered by{" "}
-              <Link href="https://aistudio.google.com/prompts/new_chat" target="_blank" rel="noopener noreferrer" className="font-medium hover:underline text-sky-500">
-                Gemini 2.5 Flash
-              </Link>
-              {" "}|{" "}
-              <Link href="https://fal.ai/models/fal-ai/imagen4/preview" target="_blank" rel="noopener noreferrer" className="font-medium hover:underline text-sky-500">
-                Imagen 4
-              </Link>
-            </p>
-          </footer>
         </>
       )}
     </div>
