@@ -5,7 +5,6 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Download, CheckCircle, Loader2, ClipboardCopy } from "lucide-react";
-import Link from "next/link";
 import React from "react";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
