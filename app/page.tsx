@@ -8,14 +8,7 @@ import { ArrowLeft, Download, CheckCircle, Loader2, ClipboardCopy } from "lucide
 import React from "react";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+// Dialog imports removed: API key modal no longer needed
 
 // Define an interface for the image style options
 interface ImageStyle {
@@ -68,7 +61,7 @@ const imageStyleOptions: ImageStyle[] = [
     name: "SUMI-E INK WASH",
     src: "/url-to-image/6.png",
     alt: "Traditional sumi-e ink wash style",
-    prompt: "1. Traditional sumi-e ink wash style\n2. Stark contrasts between deep blacks and untouched whites\n3. Balanced and contemplative composition"
+    prompt: "1. Traditional sumi-e ink wash style\n2. Stark contrasts between black and white\n3. Balanced composition"
   },
 ];
 
@@ -110,9 +103,9 @@ const UrlToImageProgressBar = ({ activeStep }: { activeStep: number }) => {
       <div className="flex items-center justify-center space-x-2 mb-2">
         <span className="text-sm text-muted-foreground">Step {activeStep} of 6</span>
       </div>
-      <div className="w-full bg-muted rounded-full h-2">
+      <div className="w-full bg-muted rounded-full h-1.5">
         <div
-          className="bg-primary h-2 rounded-full transition-all duration-300 ease-in-out"
+          className="bg-primary h-1.5 rounded-full transition-all duration-200 ease-in-out"
           style={{ width: `${(activeStep / 6) * 100}%` }}
         />
       </div>
@@ -136,66 +129,19 @@ export default function UrlToImagePage() {
   const thinkingRef = useRef<HTMLDivElement>(null);
   const [expandedPromptId, setExpandedPromptId] = useState<string | null>(null);
   const [stylePrompt, setStylePrompt] = useState<string>("");
-  const [firecrawlApiKey, setFirecrawlApiKey] = useState<string>("");
-  const [hasApiKey, setHasApiKey] = useState<boolean>(false); // Start with false to prevent flashing
-  const [showApiKeyModal, setShowApiKeyModal] = useState(false);
-  const [isCheckingEnv, setIsCheckingEnv] = useState(true); // Add loading state for environment check
+  // API keys are provided by infrastructure; no client-side API key handling needed
 
   // Add a reference for the content container to prevent page jumping
   // This reference is not being used - removing it
   // const contentContainerRef = useRef<HTMLDivElement>(null);
 
-  // Check if environment variables exist on component mount
-  useEffect(() => {
-    const checkEnvironmentVariables = async () => {
-      try {
-        const response = await fetch('/api/check-env');
-        const data = await response.json();
-        
-        // If FIRECRAWL_API_KEY exists in environment variables
-        if (data.environmentStatus.FIRECRAWL_API_KEY) {
-          setHasApiKey(true);
-        } else {
-          setHasApiKey(false);
-        }
-      } catch (error) {
-        console.error("Error checking environment variables:", error);
-        setHasApiKey(false); // Default to false if check fails
-      } finally {
-        setIsCheckingEnv(false); // Environment check is complete
-      }
-    };
-    
-    checkEnvironmentVariables();
-  }, []);
-
-  // Use user-provided API key for the current session only
-  const saveApiKey = () => {
-    if (firecrawlApiKey.trim()) {
-      setHasApiKey(true);
-      setShowApiKeyModal(false);
-      toast.success("API key saved for this session!");
-
-      // Continue with the workflow - proceed to step 2
-      setCurrentStep(2);
-    } else {
-      toast.error("Please enter a valid API key");
-    }
-  };
-
-  // Removed external Firecrawl link button
+  // Removed API key checks and modal; infrastructure supplies server-side keys
 
   const handleUrlSubmit = async () => {
     if (!url) return;
     setError(null);
-
-    // If no API key is available, show the modal instead of proceeding
-    if (!hasApiKey) {
-      setShowApiKeyModal(true);
-    } else {
-      // If API key is available, proceed to step 2
-      setCurrentStep(2);
-    }
+    // Proceed directly; server uses configured keys
+    setCurrentStep(2);
   };
 
   const handleStyleSelect = async (styleId: string) => {
@@ -224,15 +170,10 @@ export default function UrlToImagePage() {
   // 1. Scrape Website
   setLoadingMessage("Extracting website content...");
 
-      // Prepare headers based on whether we're using env variables or user input
+      // Basic JSON headers; server has access to API keys via environment
       const headers: Record<string, string> = {
         'Content-Type': 'application/json'
       };
-
-      // Add the API key header if the user has provided one
-      if (firecrawlApiKey) {
-        headers['X-Firecrawl-API-Key'] = firecrawlApiKey;
-      }
 
       const scrapeResponse = await fetch('/api/scrape', {
         method: 'POST',
@@ -539,48 +480,11 @@ The final prompt should read naturally as ONE complete instruction, not a list o
   };
 
   return (
-  <div className="px-4 sm:container py-6 sm:py-10 max-w-3xl mx-auto font-sans">
-
-      {/* Show loading state while checking environment */}
-      {isCheckingEnv ? (
-        <div className="text-center py-10">
-          <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
-          <p className="text-sm text-muted-foreground">Initializing...</p>
-        </div>
-      ) : (
-        <>
+  <div className="px-4 sm:container py-6 sm:py-10 mx-auto font-sans" style={{ maxWidth: 720 }}>
+      <>
           <UrlToImageProgressBar activeStep={currentStep} />
 
-          {/* API Key Modal */}
-          <Dialog open={showApiKeyModal} onOpenChange={setShowApiKeyModal}>
-            <DialogContent className="sm:max-w-md bg-white dark:bg-zinc-900">
-              <DialogHeader>
-                <DialogTitle>API Key Required</DialogTitle>
-                <DialogDescription>
-                  An API key is required to use the website extraction service. Enter your key below to continue.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="flex flex-col gap-4 py-4">
-                <Input
-                  type="password"
-                  placeholder="Enter your API key"
-                  value={firecrawlApiKey}
-                  onChange={(e) => setFirecrawlApiKey(e.target.value)}
-                  className="flex-grow"
-                />
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  Your API key will only be used for this session and will not be stored permanently.
-                </p>
-              </div>
-              <DialogFooter>
-                <Button onClick={saveApiKey} variant="orange" className="cursor-pointer">
-                  Save and Continue
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-
-          <div className="bg-card p-6 sm:p-8 rounded-lg shadow-sm ">
+          <div className="bg-card p-6 sm:p-8 rounded-[10px] border ">
             {error && (
               <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md">
                 <p className="font-semibold">Error:</p>
@@ -628,14 +532,8 @@ The final prompt should read naturally as ONE complete instruction, not a list o
                     <div key={styleOption.id} className="space-y-2">
                       <button
                         onClick={() => handleStyleSelect(styleOption.id)}
-                        className={`relative border-2 rounded-lg overflow-hidden transition-all duration-200 ease-in-out group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 aspect-square w-full
-                                    hover:translate-y-[1px] hover:scale-[0.98] 
-                                    active:translate-y-[2px] active:scale-[0.97] 
-                                    disabled:shadow-none disabled:hover:translate-y-0 disabled:hover:scale-100 
-                                    [box-shadow:inset_0px_-2.108433723449707px_0px_0px_#171310,_0px_1.2048193216323853px_6.325301647186279px_0px_rgba(58,_33,_8,_0.25)] 
-                                    hover:[box-shadow:inset_0px_-1px_0px_0px_#171310,_0px_1px_3px_0px_rgba(58,_33,_8,_0.2)] 
-                                    active:[box-shadow:inset_0px_1px_1px_0px_#171310,_0px_1px_2px_0px_rgba(58,_33,_8,_0.15)] 
-                                    ${selectedStyleId === styleOption.id ? "border-primary ring-2 ring-primary" : "border-card hover:border-muted-foreground/50"}`}
+                        className={`relative border rounded-[10px] overflow-hidden transition-colors duration-150 ease-in-out group focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 aspect-square w-full
+                                    ${selectedStyleId === styleOption.id ? "border-foreground/40" : "border-input hover:border-foreground/30"}`}
                       >
                         <Image
                           src={styleOption.src}
@@ -649,7 +547,7 @@ The final prompt should read naturally as ONE complete instruction, not a list o
                             <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground" />
                           </div>
                         )}
-                        <p className="text-center py-2 text-xs sm:text-sm font-medium bg-card/70 dark:bg-zinc-900/70 backdrop-blur-sm absolute bottom-0 w-full text-foreground dark:text-zinc-200 group-hover:bg-black group-hover:text-white transition-colors duration-200">
+                        <p className="text-center py-2 text-xs sm:text-sm font-medium bg-card/80 dark:bg-zinc-900/80 absolute bottom-0 w-full text-foreground dark:text-zinc-200 transition-colors duration-150">
                           {styleOption.name}
                         </p>
                       </button>
@@ -933,7 +831,6 @@ The final prompt should read naturally as ONE complete instruction, not a list o
             )}
           </div>
         </>
-      )}
     </div>
   );
 }

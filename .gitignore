@@ -43,3 +43,6 @@ next-env.d.ts
 
 # Windows/ADS metadata copied onto files
 *:\Zone.Identifier
+
+# clerk configuration (can include secrets)
+/.clerk/
