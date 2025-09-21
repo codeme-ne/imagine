@@ -70,10 +70,12 @@ export async function POST(req: NextRequest) {
     success_url: `${origin}/?purchase=success`,
     cancel_url: `${origin}/?purchase=cancelled`,
     client_reference_id: userId,
+    customer_email: user.email || undefined,
     metadata: {
       credits: String(cfg.defaultCredits),
       pack: chosen,
       app: "imagine",
+      promoCodeAttempt: promoCode ? String(promoCode) : "",
     },
   });
 
