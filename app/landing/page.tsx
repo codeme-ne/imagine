@@ -226,7 +226,7 @@ export default function LandingPage() {
       <section id="pricing" className="px-6 md:px-8 py-12 md:py-16">
         <div className="mx-auto w-full max-w-xl md:max-w-3xl lg:max-w-6xl">
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-foreground">Simple pricing</h2>
-          <p className="mt-2 text-sm text-muted-foreground">Pay as you go with credits. 1 credit = 1 image. First-time users get 2 free credits. Up to 100 images/day.</p>
+          <p className="mt-2 text-sm text-muted-foreground">Pay as you go with credits. 1 credit = 1 image. First-time users get 1 free credit.</p>
           <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[{
               name: 'Starter', price: '€5', credits: 20, blurb: 'Great for occasional posts', pack: 'starter'
@@ -268,7 +268,7 @@ export default function LandingPage() {
                 </div>
                 <div>
                   <p className="font-medium text-foreground">How does pricing work?</p>
-                  <p>1 credit = 1 image. Scraping and prompt generation are free. You get 2 free credits on first sign‑in. Daily cap is 100 images per user.</p>
+                  <p>1 credit = 1 image. Scraping and prompt generation are free. You get 1 free credit on first sign‑in.</p>
                 </div>
                 <div>
                   <p className="font-medium text-foreground">Can I regenerate images?</p>
@@ -276,7 +276,7 @@ export default function LandingPage() {
                 </div>
                 <div>
                   <p className="font-medium text-foreground">Is there a limit?</p>
-                  <p>Along with credits, we enforce a daily cap (100 images/day) and standard per‑IP rate limits for stability.</p>
+                  <p>We enforce standard per‑IP rate limits for stability.</p>
                 </div>
                 <div>
                   <p className="font-medium text-foreground">What’s the workflow?</p>

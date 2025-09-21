@@ -16,7 +16,7 @@ export default function SignInLink() {
       aria-hidden={hidden}
       tabIndex={hidden ? -1 : 0}
     >
-      <Link href="/auth/signin">Anmelden</Link>
+      <Link href="/auth/signin">Sign in</Link>
     </Button>
   );
 }

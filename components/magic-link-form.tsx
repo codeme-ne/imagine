@@ -15,7 +15,7 @@ function SubmitButton() {
   const { pending } = useFormStatus();
   return (
     <Button type="submit" className="w-full" disabled={pending}>
-      {pending ? "Senden…" : "Magic Link senden"}
+      {pending ? "Sending…" : "Send magic link"}
     </Button>
   );
 }
@@ -27,7 +27,7 @@ function EmailInput() {
       id="email"
       type="email"
       name="email"
-      placeholder="beispiel@domain.com"
+      placeholder="name@example.com"
       required
       disabled={pending}
     />
@@ -39,7 +39,7 @@ export default function MagicLinkForm({ action }: Props) {
     ok: false,
   });
 
-  // Optional: Fokus auf Fehlermeldung setzen, wenn vorhanden
+  // Optional: focus error message if present
   useEffect(() => {
     if (state?.error) {
       const el = document.getElementById("magic-link-error");
@@ -50,7 +50,7 @@ export default function MagicLinkForm({ action }: Props) {
   return (
     <form action={formAction} className="grid gap-4">
       <div className="grid gap-2">
-        <Label htmlFor="email">E-Mail</Label>
+        <Label htmlFor="email">Email</Label>
         <EmailInput />
       </div>
       <SubmitButton />
@@ -64,9 +64,7 @@ export default function MagicLinkForm({ action }: Props) {
             {state.error}
           </p>
         ) : state?.ok ? (
-          <p className="text-sm text-green-600">
-            Magic Link gesendet. Bitte Posteingang (und Spam) prüfen.
-          </p>
+          <p className="text-sm text-green-600">Magic link sent. Please check your inbox and spam.</p>
         ) : null}
       </div>
     </form>

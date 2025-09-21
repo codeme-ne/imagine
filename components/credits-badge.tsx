@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 
 type CreditsInfo = {
   credits: number;
-  dailyRemaining: number;
-  dailyCap: number;
+  dailyRemaining: number; // kept for backend needs; not shown
+  dailyCap: number;       // kept for backend needs; not shown
 };
 
 export default function CreditsBadge() {
@@ -49,8 +49,6 @@ export default function CreditsBadge() {
     <div className="flex items-center gap-2">
       <div className="rounded-md border px-2.5 py-1 text-xs text-foreground bg-card">
         Credits: <span className="font-semibold">{info?.credits ?? "—"}</span>
-        <span className="opacity-50 mx-1">•</span>
-        Daily: <span className="font-semibold">{info ? `${info.dailyRemaining}/${info.dailyCap}` : "—"}</span>
       </div>
       <div className="flex gap-1">
         <Button size="sm" variant="outline" onClick={() => startCheckout("starter")} disabled={!!buying}>

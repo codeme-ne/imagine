@@ -12,12 +12,12 @@ export default function SignInPage() {
     try {
       await signIn("resend", {
         email,
-        redirectTo: "/?welcome=1",  // Nach erfolgreicher Authentifizierung zur Hauptseite weiterleiten (mit Toast-Flag)
-        redirect: false   // Server Action selbst soll nicht weiterleiten
+        redirectTo: "/?welcome=1",
+        redirect: false
       });
       return { ok: true as const };
     } catch (e) {
-      let message = "Senden fehlgeschlagen. Bitte später erneut versuchen.";
+      let message = "Sending failed. Please try again later.";
       if (e instanceof Error) {
         message = e.message;
       }
@@ -29,9 +29,9 @@ export default function SignInPage() {
     <div className="flex justify-center items-center h-[calc(100vh-200px)]">
       <Card className="mx-auto w-full max-w-sm">
         <CardHeader>
-          <CardTitle className="text-2xl">Anmelden</CardTitle>
+          <CardTitle className="text-2xl">Sign in</CardTitle>
           <CardDescription>
-            Geben Sie Ihre E-Mail-Adresse ein, um einen Magic Link zu erhalten.
+            Enter your email to receive a magic link.
           </CardDescription>
         </CardHeader>
         <CardContent>

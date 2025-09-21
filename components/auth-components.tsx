@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 export async function SignIn() {
   return (
     <Button asChild variant="outline">
-      <Link href="/auth/signin">Anmelden</Link>
+      <Link href="/auth/signin">Sign in</Link>
     </Button>
   )
 }
@@ -18,7 +18,9 @@ export async function SignOut() {
         await signOut();
       }}
     >
-      <Button type="submit" variant="outline">Abmelden</Button>
+      <Button type="submit" variant="outline">Sign out</Button>
+      
+      
     </form>
   );
 }

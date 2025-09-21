@@ -120,12 +120,12 @@ export default function UrlToImagePage() {
   const [selectedStyleId, setSelectedStyleId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [credits, setCredits] = useState<number | null>(null);
-  // Willkommen-Toast nach erfolgreichem Login via Magic Link
+  // Welcome toast after login via magic link
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     if (params.get("welcome") === "1") {
-      toast.success("Willkommen zurück!");
+      toast.success("Welcome back!");
       params.delete("welcome");
       const search = params.toString();
       const nextUrl = window.location.pathname + (search ? `?${search}` : "") + window.location.hash;
@@ -422,6 +422,7 @@ The final prompt should read naturally as ONE complete instruction, not a list o
         // Handle credits/daily/regen limits gracefully
         const status = imageGenResponse.status;
         let message = `Image generation failed with status: ${status}`;
+        const dailyHeader = imageGenResponse.headers.get('X-Daily-Remaining');
         try {
           const errData = (await imageGenResponse.json()) as ImageGenResponse & { remaining?: number; dailyRemaining?: number };
           if (errData.error) message = errData.error;
@@ -429,14 +430,18 @@ The final prompt should read naturally as ONE complete instruction, not a list o
 
         if (status === 402) {
           // Out of credits – prompt to buy
-          setError(message);
+          setError('You are out of credits. Buy credits to continue.');
           setIsLoading(false);
-          // Stay on prompt step for easy regen after purchase
           setCurrentStep(4);
           return;
         }
         if (status === 429) {
-          setError(message);
+          // Hide daily-cap details from UI; keep regen message if present
+          const isDaily = dailyHeader === '0';
+          const uiMessage = /Regeneration limit/i.test(message)
+            ? message
+            : (isDaily ? 'Temporarily limited. Please try again later.' : 'Please try again later.');
+          setError(uiMessage);
           setIsLoading(false);
           setCurrentStep(4);
           return;
