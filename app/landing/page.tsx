@@ -222,6 +222,35 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Pricing */}
+      <section id="pricing" className="px-6 md:px-8 py-12 md:py-16">
+        <div className="mx-auto w-full max-w-xl md:max-w-3xl lg:max-w-6xl">
+          <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-foreground">Simple pricing</h2>
+          <p className="mt-2 text-sm text-muted-foreground">Pay as you go with credits. 1 credit = 1 image. First-time users get 2 free credits. Up to 100 images/day.</p>
+          <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[{
+              name: 'Starter', price: '€5', credits: 20, blurb: 'Great for occasional posts', pack: 'starter'
+            }, {
+              name: 'Creator', price: '€12', credits: 60, blurb: 'For regular content', pack: 'creator'
+            }, {
+              name: 'Pro', price: '€35', credits: 200, blurb: 'Best value for teams', pack: 'pro'
+            }].map((p) => (
+              <div key={p.name} className="rounded-lg border bg-card p-5 flex flex-col">
+                <h3 className="font-semibold text-foreground">{p.name}</h3>
+                <div className="mt-1 text-2xl font-semibold">{p.price}</div>
+                <div className="text-sm text-muted-foreground">{p.credits} credits</div>
+                <p className="mt-3 text-sm text-muted-foreground">{p.blurb}</p>
+                <div className="mt-5">
+                  <Button asChild className="w-full">
+                    <Link href="/auth/signin">Sign in to buy</Link>
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* FAQ & Trust */}
       <section className="px-6 md:px-8 pb-20">
         <div className="mx-auto w-full max-w-xl md:max-w-3xl lg:max-w-5xl">
@@ -238,12 +267,24 @@ export default function LandingPage() {
                   <p>We include curated presets (Ghibli, LEGO, Claymation, Logo, Whimsical, Sumi‑e). You can also tweak the prompt for custom looks.</p>
                 </div>
                 <div>
+                  <p className="font-medium text-foreground">How does pricing work?</p>
+                  <p>1 credit = 1 image. Scraping and prompt generation are free. You get 2 free credits on first sign‑in. Daily cap is 100 images per user.</p>
+                </div>
+                <div>
+                  <p className="font-medium text-foreground">Can I regenerate images?</p>
+                  <p>Yes—up to 3 additional regenerations per prompt (total 4 images per prompt). Each regeneration costs 1 credit.</p>
+                </div>
+                <div>
                   <p className="font-medium text-foreground">Is there a limit?</p>
-                  <p>Endpoints are rate‑limited per IP in production to prevent abuse. Limits are enforced per endpoint (scrape, prompt, image).</p>
+                  <p>Along with credits, we enforce a daily cap (100 images/day) and standard per‑IP rate limits for stability.</p>
                 </div>
                 <div>
                   <p className="font-medium text-foreground">What’s the workflow?</p>
                   <p>Paste URL → pick style → we extract content → we craft a prompt → we render the image → you download.</p>
+                </div>
+                <div>
+                  <p className="font-medium text-foreground">How do payments work?</p>
+                  <p>We use Stripe Checkout on our existing Stripe account. Buy credit packs as one‑time purchases. Credits don’t expire.</p>
                 </div>
               </div>
             </div>

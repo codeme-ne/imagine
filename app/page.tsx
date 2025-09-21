@@ -8,6 +8,7 @@ import { ArrowLeft, Download, CheckCircle, Loader2, ClipboardCopy } from "lucide
 import React from "react";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
+import CreditsBadge from "@/components/credits-badge";
 // Dialog imports removed: API key modal no longer needed
 
 // Define an interface for the image style options
@@ -396,8 +397,30 @@ The final prompt should read naturally as ONE complete instruction, not a list o
       });
 
       if (!imageGenResponse.ok) {
-        const errData = await imageGenResponse.json() as ImageGenResponse;
-        throw new Error(errData.error || `Image generation failed with status: ${imageGenResponse.status}`);
+        // Handle credits/daily/regen limits gracefully
+        const status = imageGenResponse.status;
+        let message = `Image generation failed with status: ${status}`;
+        try {
+          const errData = (await imageGenResponse.json()) as ImageGenResponse & { remaining?: number; dailyRemaining?: number };
+          if (errData.error) message = errData.error;
+        } catch {}
+
+        if (status === 402) {
+          // Out of credits – prompt to buy
+          setError(message);
+          setIsLoading(false);
+          // Stay on prompt step for easy regen after purchase
+          setCurrentStep(4);
+          return;
+        }
+        if (status === 429) {
+          setError(message);
+          setIsLoading(false);
+          setCurrentStep(4);
+          return;
+        }
+
+        throw new Error(message);
       }
 
       const imageGenData = await imageGenResponse.json() as ImageGenResponse;
@@ -454,6 +477,22 @@ The final prompt should read naturally as ONE complete instruction, not a list o
     setIsThinking(false);
   };
 
+  const startCheckout = async (pack: 'starter' | 'creator' | 'pro' = 'starter') => {
+    try {
+      const res = await fetch('/api/billing/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pack }),
+      });
+      const data = await res.json();
+      if (data?.url) {
+        window.location.href = data.url;
+      }
+    } catch {
+      // ignore
+    }
+  };
+
   const getSelectedStyleName = () => {
     return imageStyleOptions.find(s => s.id === selectedStyleId)?.name || selectedStyleId || "selected style";
   };
@@ -494,6 +533,9 @@ The final prompt should read naturally as ONE complete instruction, not a list o
   return (
   <div className="px-4 sm:container py-6 sm:py-10 mx-auto font-sans" style={{ maxWidth: 720 }}>
       <>
+          <div className="mb-3 flex justify-end">
+            <CreditsBadge />
+          </div>
           <UrlToImageProgressBar activeStep={currentStep} />
 
           <div className="bg-card p-6 sm:p-8 rounded-[10px] border ">
@@ -501,7 +543,10 @@ The final prompt should read naturally as ONE complete instruction, not a list o
               <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md">
                 <p className="font-semibold">Error:</p>
                 <p>{error}</p>
-                <Button onClick={resetProcess} variant="link" className="text-red-700 underline p-0 h-auto mt-1">Try Again</Button>
+                <div className="flex items-center gap-3 mt-2">
+                  <Button onClick={resetProcess} variant="link" className="text-red-700 underline p-0 h-auto">Try Again</Button>
+                  <Button onClick={() => startCheckout('starter')} variant="outline" size="sm">Buy credits</Button>
+                </div>
               </div>
             )}
             {currentStep === 1 && (

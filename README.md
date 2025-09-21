@@ -20,6 +20,7 @@ Turn any website into a beautiful image using [Firecrawl](https://www.firecrawl.
 | Google Gemini | Prompt generation with Gemini-2.5-Flash | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) |
 | Fal.ai | Access to Google's Imagen 4 | [fal.ai/dashboard/keys](https://fal.ai/dashboard/keys) |
 | Upstash Redis | Rate limiting (production only) | [upstash.com](https://upstash.com) |
+| Stripe | Payments for credit packs | [stripe.com](https://dashboard.stripe.com/apikeys) |
 
 ### Quick Start
 
@@ -33,6 +34,17 @@ Turn any website into a beautiful image using [Firecrawl](https://www.firecrawl.
    # For production - enables rate limiting (50 req/IP/day per endpoint)
    UPSTASH_REDIS_REST_URL=your_upstash_url
    UPSTASH_REDIS_REST_TOKEN=your_upstash_token
+
+   # Stripe (credit packs + webhook)
+   STRIPE_SECRET_KEY=sk_live_or_test
+   STRIPE_WEBHOOK_SECRET=whsec_...
+   STRIPE_PRICE_STARTER=price_...
+   STRIPE_PRICE_CREATOR=price_...
+   STRIPE_PRICE_PRO=price_...
+   # Optional: override default credits per pack
+   # CREDITS_STARTER=20
+   # CREDITS_CREATOR=60
+   # CREDITS_PRO=200
    ```
 3. Install dependencies: `npm install` or `yarn install`
 4. Run the development server: `npm run dev` or `yarn dev`
@@ -41,6 +53,13 @@ Turn any website into a beautiful image using [Firecrawl](https://www.firecrawl.
 
 - **Rate Limiting**: All API endpoints are limited to 50 requests per IP address per day to prevent abuse
 - **Per-endpoint Limits**: Each endpoint (imagen 4, gemini, scrape) has its own separate rate limit counter
+- **Credits + Daily Caps**: 1 credit = 1 image. First-time users get 2 free credits. Daily cap of 100 images/user enforced server-side.
+
+## Billing & Credits
+
+- Uses Stripe Checkout for one-time credit packs (Starter, Creator, Pro)
+- Stripe webhook credits the user account on `checkout.session.completed`
+- Regenerations are limited to 3 extra per prompt (total 4 images per prompt)
 
 ## How It Works
 
