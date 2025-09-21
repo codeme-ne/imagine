@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Next.js 15 application that transforms websites into beautiful AI-generated images. The app extracts content from URLs using Firecrawl, generates image prompts with Google Gemini-2.5-Flash, and creates images using Google Imagen 4 via Fal.ai. Built with TypeScript, React 19, Tailwind CSS, and Clerk authentication.
+This is a Next.js 15 application that transforms websites into beautiful AI-generated images. The app extracts content from URLs using Firecrawl, generates image prompts with Google Gemini 2.5 Flash, and creates images using Google Imagen 4 via Fal.ai. Built with TypeScript, React 19, Tailwind CSS, and NextAuth (email via Resend).
 
 ## Development Commands
 
@@ -33,7 +33,7 @@ This is a Next.js 15 application that transforms websites into beautiful AI-gene
 - **`app/`** - Next.js App Router with main pages and API routes
   - `app/page.tsx` - Main URL-to-image workflow interface with 6-step progress bar
   - `app/landing/page.tsx` - Marketing landing page for unauthenticated users
-  - `app/layout.tsx` - Root layout with Clerk auth header and global styles
+  - `app/layout.tsx` - Root layout with header and global styles (NextAuth)
   - `app/api/` - Backend API routes for external service integration
 
 - **`components/ui/`** - Shadcn/Radix UI components (kebab-case files, PascalCase exports)
@@ -50,7 +50,7 @@ All API routes implement rate limiting and follow consistent error handling patt
 - **`/api/scrape`** - Firecrawl integration for website content extraction
 - **`/api/gemini`** - Google Gemini streaming prompt generation with thinking steps
 - **`/api/imagen4`** - Fal.ai Imagen 4 image generation
-- **`/api/check-env`** - Environment variable validation for required API keys
+- **`/api/check-env`** - Environment variable validation for required keys (no client key entry)
 
 ### State Management
 
@@ -58,11 +58,11 @@ The main application (`app/page.tsx`) uses React state for:
 - **Multi-step workflow** - 6-step progress tracking with current step state
 - **Session storage** - Temporary prompt caching for navigation between steps
 - **Loading states** - Per-step loading indicators and error boundaries
-- **API key handling** - Runtime detection of env vars vs user-provided keys
+- **API key handling** - Server-side environment variables (no in-app key entry)
 
 ### Authentication & Security
 
-- **Clerk Integration** - Full authentication with protected routes
+- **NextAuth + Resend** - Passwordless email auth with protected routes
 - **Middleware** - Route protection redirecting unauthenticated users to `/landing`
 - **Rate Limiting** - Per-endpoint, per-IP limits via Upstash Redis in production
 - **Fail-open Pattern** - Rate limiting gracefully degrades in development/errors
@@ -76,16 +76,17 @@ FIRECRAWL_API_KEY=fc-xxx
 GEMINI_API_KEY=xxx (or GOOGLE_API_KEY)
 FAL_KEY=xxx
 
-# Authentication
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_xxx
-CLERK_SECRET_KEY=sk_xxx
+# Authentication (NextAuth + Resend)
+AUTH_RESEND_KEY=re_...
+EMAIL_FROM=hello@example.com
+# NEXTAUTH_URL=https://your-domain.com (production)
 
 # Production rate limiting (optional)
 UPSTASH_REDIS_REST_URL=xxx
 UPSTASH_REDIS_REST_TOKEN=xxx
 ```
 
-Use `/api/check-env` to verify configuration. The app supports user-provided API keys as fallback for Firecrawl.
+Use `/api/check-env` to verify configuration. Keys are provided by the server environment; no client key input.
 
 ## Code Style & Patterns
 
@@ -122,7 +123,7 @@ The application includes 6 preset image styles with corresponding prompts:
 ## Important Implementation Notes
 
 - All API routes use consistent error handling and rate limiting patterns
-- The main workflow supports both environment-based and user-provided API keys
+- The main workflow uses server-provided environment keys
 - Prompt generation uses streaming responses with "thinking steps" displayed to users
 - Image generation combines content prompts with style-specific prompts
 - Session storage prevents prompt regeneration during navigation

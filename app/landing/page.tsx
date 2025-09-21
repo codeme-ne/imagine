@@ -115,6 +115,36 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Style presets (moved up) */}
+      <section className="px-6 md:px-8 py-12 md:py-16">
+        <div className="mx-auto w-full max-w-xl md:max-w-3xl lg:max-w-6xl">
+          <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-foreground">
+            Style presets included
+          </h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Choose from curated looks like Ghibli, LEGO, Claymation, Logo, Whimsical, and Sumi‑e—or bring your own prompt.
+          </p>
+          <div className="mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 md:gap-8">
+            {[
+              { src: "/url-to-image/1.png", label: "Ghibli" },
+              { src: "/url-to-image/2.png", label: "LEGO" },
+              { src: "/url-to-image/3.png", label: "Claymation" },
+              { src: "/url-to-image/4.png", label: "Logo" },
+              { src: "/url-to-image/5.png", label: "Whimsical" },
+              { src: "/url-to-image/6.png", label: "Sumi‑e Ink Wash" },
+            ].map((item) => (
+                <figure key={item.label} className="overflow-hidden rounded-lg border bg-muted">
+                  <div className="relative aspect-square">
+                    <Image src={item.src} alt={item.label} fill className="object-cover" />
+                  </div>
+                  <figcaption className="p-3 text-center text-sm text-muted-foreground">{item.label} </figcaption>
+                </figure>
+              )
+            )}
+          </div>
+        </div>
+      </section>
+
       {/* Who it's for */}
       <section className="px-6 md:px-8 py-10">
         <div className="mx-auto w-full max-w-xl md:max-w-3xl lg:max-w-6xl rounded-lg border bg-card p-6">
@@ -226,35 +256,7 @@ export default function LandingPage() {
         </section>
       )}
 
-      {/* Style presets */}
-      <section className="px-6 md:px-8 py-12 md:py-16">
-        <div className="mx-auto w-full max-w-xl md:max-w-3xl lg:max-w-6xl">
-          <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-foreground">
-            Style presets included
-          </h2>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Choose from curated looks like Ghibli, LEGO, Claymation, Logo, Whimsical, and Sumi‑e—or bring your own prompt.
-          </p>
-          <div className="mt-6 grid md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {[
-              { src: "/url-to-image/1.png", label: "Ghibli" },
-              { src: "/url-to-image/2.png", label: "LEGO" },
-              { src: "/url-to-image/3.png", label: "Claymation" },
-              { src: "/url-to-image/4.png", label: "Logo" },
-              { src: "/url-to-image/5.png", label: "Whimsical" },
-              { src: "/url-to-image/6.png", label: "Sumi‑e Ink Wash" },
-            ].map((item) => (
-                <figure key={item.label} className="overflow-hidden rounded-lg border bg-muted">
-                  <div className="relative aspect-[17/16]">
-                    <Image src={item.src} alt={item.label} fill className="object-cover" />
-                  </div>
-                  <figcaption className="p-3 text-center text-sm text-muted-foreground">{item.label} </figcaption>
-                </figure>
-              )
-            )}
-          </div>
-        </div>
-      </section>
+      
 
       {/* Pricing */}
       <section id="pricing" className="px-6 md:px-8 py-12 md:py-16">
