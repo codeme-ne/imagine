@@ -44,20 +44,23 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen font-sans">
       {/* Hero */}
       <section className="px-6 md:px-8 pt-16 md:pt-24 pb-6 md:pb-8">
-        <div className="mx-auto" style={{ maxWidth: 720 }}>
-          <div className="grid gap-10 md:grid-cols-2 md:items-center">
-            <div>
+        <div className="mx-auto w-full max-w-xl md:max-w-3xl lg:max-w-6xl">
+          <div className="grid md:grid-cols-2 md:items-center gap-8 md:gap-12 lg:gap-16">
+            <div className="max-w-xl">
               <h1 className="text-4xl md:text-5xl font-semibold tracking-tight text-foreground">Turn any URL into a stunning visual. Instantly.</h1>
               <p className="mt-4 text-base md:text-lg text-muted-foreground">Create on-brand social posts, blog graphics, and marketing visuals in minutes. Save hours each week and say goodbye to expensive freelancers and complicated design tools.</p>
-              <div className="mt-4 flex flex-wrap items-center gap-3">
-                <Button asChild>
-                  <Link href="/auth/signin">Generate your first image</Link>
-                </Button>
+              <div className="mt-4">
+                <div className="flex flex-wrap items-center gap-3">
+                  <Button asChild>
+                    <Link href="/auth/signin">Generate your first image</Link>
+                  </Button>
+                </div>
               </div>
-              <div className="mt-3 flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
+              <div className="mt-3">
+                <div className="flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
                 {["Ghibli", "LEGO", "Claymation", "Logo", "Whimsical", "Sumi-e"].map(
                   (style, index, arr) => (
                     <span key={style} className="flex items-center gap-x-2">
@@ -68,10 +71,11 @@ export default function LandingPage() {
                     </span>
                   ),
                 )}
+                </div>
               </div>
             </div>
 
-            <div className="relative aspect-[4/3] overflow-hidden rounded-[10px] border bg-muted">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-lg border bg-muted">
               <Image
                 src="/url-to-image/hero_main.png"
                 alt="Hero visual generated from a URL"
@@ -86,7 +90,8 @@ export default function LandingPage() {
 
       {/* Logos / Tech */}
       <section className="px-6 md:px-8 py-6">
-        <div className="mx-auto grid grid-cols-2 sm:grid-cols-4 gap-6 items-center opacity-80" style={{ maxWidth: 720 }}>
+        <div className="mx-auto w-full max-w-xl md:max-w-3xl lg:max-w-6xl opacity-80">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 items-center">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Flame className="h-5 w-5 text-foreground" />
             <span>Firecrawl</span>
@@ -103,14 +108,15 @@ export default function LandingPage() {
             <FileJson className="h-5 w-5 text-foreground" />
             <span>Next.js 15</span>
           </div>
+          </div>
         </div>
       </section>
 
       {/* Who it's for */}
       <section className="px-6 md:px-8 py-10">
-        <div className="mx-auto rounded-[10px] border bg-card p-6" style={{ maxWidth: 720 }}>
+        <div className="mx-auto w-full max-w-xl md:max-w-3xl lg:max-w-6xl rounded-lg border bg-card p-6">
           <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-foreground">Your Brand, Your Content, Instantly Visualized.</h2>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 text-sm text-muted-foreground">
+          <div className="mt-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm text-muted-foreground">
             <p>• Create stunning visuals for changelogs, launch announcements, and product pages without needing a designer.</p>
             <p>• Ensure brand consistency—your website&apos;s headline and key messages are automatically baked into every image.</p>
             <p>• Go from idea to iteration in seconds. Switch styles, tweak prompts, and download your final image instantly.</p>
@@ -120,10 +126,10 @@ export default function LandingPage() {
 
       {/* Feature grid */}
       <section className="px-6 md:px-8 py-12 md:py-16">
-        <div className="mx-auto" style={{ maxWidth: 720 }}>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mx-auto w-full max-w-xl md:max-w-3xl lg:max-w-6xl">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((f) => (
-              <div key={f.title} className="rounded-[10px] border bg-card p-5">
+              <div key={f.title} className="rounded-lg border bg-card p-5">
                 <h3 className="font-semibold text-foreground">{f.title}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">{f.desc}</p>
               </div>
@@ -134,15 +140,16 @@ export default function LandingPage() {
 
       {/* How it works */}
       <section id="how-it-works" className="px-6 md:px-8 py-12 md:py-16">
-        <div className="mx-auto" style={{ maxWidth: 720 }}>
+        <div className="mx-auto w-full max-w-xl md:max-w-3xl lg:max-w-6xl">
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-foreground">
             How it works
           </h2>
-          <ol className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-6">
+          <ol className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {steps.map((s) => (
-              <li key={s.n} className="rounded-[10px] border bg-card p-5">
+              <li key={s.n} className="rounded-lg border bg-card p-5">
                 <div className="flex items-center gap-3">
-                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-semibold">
+                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-semibold font-mono">
                     {s.n}
                   </span>
                   <span className="text-sm font-medium text-foreground">{s.t}</span>
@@ -150,31 +157,34 @@ export default function LandingPage() {
               </li>
             ))}
           </ol>
-          <div className="mt-6 flex items-center gap-3">
+          </div>
+          <div className="mt-6">
+            <div className="flex items-center gap-3">
             <Button asChild variant="outline" >
               <Link href="/auth/signin">Try it for free</Link>
             </Button>
-            <span className="text-xs text-muted-foreground">It usually takes ~5–10 seconds.</span>
+            <span className="text-xs text-muted-foreground font-mono">It usually takes ~5–10 seconds.</span>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Testimonials */}
       <section className="px-6 md:px-8 py-12 md:py-16">
-        <div className="mx-auto" style={{ maxWidth: 720 }}>
+        <div className="mx-auto w-full max-w-xl md:max-w-3xl lg:max-w-6xl">
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-center text-foreground">
             Loved by Marketers, Makers, and Developers
           </h2>
-          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="rounded-[10px] border bg-card p-5">
+          <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="rounded-lg border bg-card p-5">
               <p className="text-sm text-muted-foreground">&quot;This is a game-changer for our content workflow. We went from spending hours in Figma to generating stunning, on-brand images in seconds.&quot;</p>
               <p className="mt-4 text-sm font-semibold text-foreground">- Head of Marketing, SaaS Startup</p>
             </div>
-            <div className="rounded-[10px] border bg-card p-5">
+            <div className="rounded-lg border bg-card p-5">
               <p className="text-sm text-muted-foreground">&quot;As an indie hacker, I wear a lot of hats. This tool lets me create professional-looking visuals for my projects without having to hire a designer.&quot;</p>
               <p className="mt-4 text-sm font-semibold text-foreground">- Solo Founder & Developer</p>
             </div>
-            <div className="rounded-[10px] border bg-card p-5">
+            <div className="rounded-lg border bg-card p-5">
               <p className="text-sm text-muted-foreground">&quot;The image quality is incredible, and the fact that it&apos;s built on a solid, transparent tech stack gives me a lot of confidence.&quot;</p>
               <p className="mt-4 text-sm font-semibold text-foreground">- Senior Frontend Engineer</p>
             </div>
@@ -184,14 +194,14 @@ export default function LandingPage() {
 
       {/* Style presets */}
       <section className="px-6 md:px-8 py-12 md:py-16">
-        <div className="mx-auto" style={{ maxWidth: 720 }}>
+        <div className="mx-auto w-full max-w-xl md:max-w-3xl lg:max-w-6xl">
           <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-foreground">
             Style presets included
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
             Choose from curated looks like Ghibli, LEGO, Claymation, Logo, Whimsical, and Sumi‑e—or bring your own prompt.
           </p>
-          <div className="mt-6 grid gap-6 sm:grid-cols-3">
+          <div className="mt-6 grid md:grid-cols-3 lg:grid-cols-6 gap-6">
             {[
               { src: "/url-to-image/1.png", label: "Ghibli" },
               { src: "/url-to-image/2.png", label: "LEGO" },
@@ -200,7 +210,7 @@ export default function LandingPage() {
               { src: "/url-to-image/5.png", label: "Whimsical" },
               { src: "/url-to-image/6.png", label: "Sumi‑e Ink Wash" },
             ].map((item) => (
-                <figure key={item.label} className="overflow-hidden rounded-[10px] border bg-muted">
+                <figure key={item.label} className="overflow-hidden rounded-lg border bg-muted">
                   <div className="relative aspect-[17/16]">
                     <Image src={item.src} alt={item.label} fill className="object-cover" />
                   </div>
@@ -214,11 +224,11 @@ export default function LandingPage() {
 
       {/* FAQ & Trust */}
       <section className="px-6 md:px-8 pb-20">
-        <div className="mx-auto" style={{ maxWidth: 720 }}>
+        <div className="mx-auto w-full max-w-xl md:max-w-3xl lg:max-w-5xl">
           <div className="grid gap-6 lg:grid-cols-2">
-            <div className="rounded-[10px] border bg-card p-6">
+            <div className="rounded-lg border bg-card p-6">
               <h3 className="text-lg font-semibold text-foreground">Frequently asked</h3>
-              <div className="mt-4 space-y-4 text-sm text-muted-foreground">
+              <div className="mt-4 flex flex-col gap-4 text-sm text-muted-foreground">
                 <div>
                   <p className="font-medium text-foreground">Do I need API keys?</p>
                   <p>If your environment doesn’t provide a Firecrawl key, you can paste a temporary key for your session. Keys are not stored server‑side.</p>
@@ -237,14 +247,16 @@ export default function LandingPage() {
                 </div>
               </div>
             </div>
-            <div className="rounded-[10px] border bg-card p-6">
+            <div className="rounded-lg border bg-card p-6">
               <h3 className="text-lg font-semibold text-foreground">Simple, fast, and safe</h3>
               <p className="mt-2 text-sm text-muted-foreground">Built with industry‑standard tools. No hidden processing, no gimmicks—just a clean pipeline that delivers reliable outputs.</p>
-              <ul className="mt-4 space-y-2 text-sm text-muted-foreground list-disc pl-5">
-                <li>Firecrawl for accurate content extraction</li>
-                <li>Gemini 2.5 Flash for concise, on‑brand prompts</li>
-                <li>Google Imagen 4 (via Fal.ai) for high‑quality renders</li>
-              </ul>
+              <div className="mt-4">
+                <ul className="flex flex-col gap-2 text-sm text-muted-foreground list-disc pl-5">
+                  <li>Firecrawl for accurate content extraction</li>
+                  <li>Gemini 2.5 Flash for concise, on‑brand prompts</li>
+                  <li>Google Imagen 4 (via Fal.ai) for high‑quality renders</li>
+                </ul>
+              </div>
               <div className="mt-5">
                 <Button asChild>
                   <Link href="/auth/signin">Generate from a URL</Link>
