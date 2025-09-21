@@ -1,5 +1,0 @@
-- **TypeScript:** The project uses a strict TypeScript configuration (`"strict": true` in `tsconfig.json`). All new code should be strongly typed.
-- **Linting:** The project uses ESLint with the default Next.js configurations (`next/core-web-vitals`, `next/typescript`). Adherence to these rules is expected. Run `npm run lint` to check for issues.
-- **Path Aliases:** The project is configured with a path alias `@/*` pointing to the root directory. Use this for cleaner import statements (e.g., `import { utils } from '@/lib/utils'`).
-- **Styling:** Tailwind CSS is used for styling. New UI should be built following Tailwind's utility-first principles.
-- **Components:** Reusable components should be created in the `components/` directory. For UI elements, prefer using and customizing `shadcn/ui` components where possible.

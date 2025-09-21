@@ -1,1 +1,0 @@
-The project is a URL-to-Image Generator. It uses Firecrawl to extract content from a website URL, Google Gemini-2.5-Flash-Preview to generate an image prompt from the content, and Google Imagen 4 (via Fal.ai) to generate the final image based on the prompt.
