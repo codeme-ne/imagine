@@ -69,8 +69,10 @@ export default function CreditsBadge() {
 
   return (
     <div className="flex items-center gap-2">
-      <div className="rounded-md border px-2.5 py-1 text-xs text-foreground bg-card">
-        Credits: <span className="font-semibold">{info?.credits ?? "—"}</span>
+      <div className="rounded-md border px-2.5 py-1 text-xs text-foreground bg-card shrink-0">
+        <span className="inline sm:hidden">Cr</span>
+        <span className="hidden sm:inline">Credits</span>:
+        <span className="ml-1 font-semibold">{info?.credits ?? "—"}</span>
       </div>
 
       {/* Mobile: compact dropdown */}

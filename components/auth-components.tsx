@@ -18,7 +18,7 @@ export async function SignOut() {
         await signOut();
       }}
     >
-      <Button type="submit" variant="outline">Sign out</Button>
+      <Button type="submit" variant="outline" size="sm" className="px-2 text-xs">Sign out</Button>
       
       
     </form>
@@ -31,7 +31,7 @@ export async function UserInfo() {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-sm text-muted-foreground">{session.user.email}</span>
+      <span className="hidden sm:inline text-sm text-muted-foreground">{session.user.email}</span>
       <SignOut />
     </div>
   )
