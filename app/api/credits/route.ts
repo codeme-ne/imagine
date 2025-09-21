@@ -8,11 +8,14 @@ const DAILY_CAP = 100; // images/day
 
 export async function GET() {
   const session = await auth();
-  if (!session?.user?.id) {
+  if (!session?.user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
-  const userId = session.user.id;
+  const user = session.user as { id?: string; email?: string };
+  const userId = user.id || user.email || "";
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   // Grant free trial on first login/access
   await ensureTrial(userId, 2);
@@ -24,4 +27,3 @@ export async function GET() {
 
   return NextResponse.json({ credits: balance, dailyRemaining, dailyCap: DAILY_CAP });
 }
-

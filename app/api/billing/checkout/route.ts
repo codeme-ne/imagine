@@ -18,7 +18,12 @@ const packConfig: Record<Pack, { priceId?: string; defaultCredits: number }> = {
 
 export async function POST(req: NextRequest) {
   const session = await auth();
-  if (!session?.user?.id) {
+  if (!session?.user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  const user = session.user as { id?: string; email?: string };
+  const userId = user.id || user.email || "";
+  if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   if (!process.env.STRIPE_SECRET_KEY) {
@@ -45,7 +50,7 @@ export async function POST(req: NextRequest) {
     ],
     success_url: `${origin}/?purchase=success`,
     cancel_url: `${origin}/?purchase=cancelled`,
-    client_reference_id: session.user.id,
+    client_reference_id: userId,
     metadata: {
       credits: String(cfg.defaultCredits),
       pack: chosen,
@@ -55,4 +60,3 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({ url: checkout.url });
 }
-
