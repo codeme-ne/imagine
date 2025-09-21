@@ -117,7 +117,6 @@ The application includes 6 preset image styles with corresponding prompts:
 - **Firecrawl** - Website content extraction with markdown output
 - **Google Gemini** - Streaming prompt generation with JSON response chunks
 - **Fal.ai** - Imagen 4 access with base64 image responses
-- **Clerk** - Authentication with sign-in/sign-up flows
 - **Upstash Redis** - Production rate limiting with graceful degradation
 
 ## Important Implementation Notes

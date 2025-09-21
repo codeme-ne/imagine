@@ -1,22 +1,33 @@
 import { signIn } from "@/auth";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import MagicLinkForm from "@/components/magic-link-form";
 
 export default function SignInPage() {
-  async function signInAction(formData: FormData) {
+  async function signInAction(
+    _prevState: { ok: boolean; error?: string },
+    formData: FormData
+  ) {
     "use server";
     const email = formData.get("email") as string;
-    await signIn("email", { email, redirect: false });
-    // Hier könnten wir eine Bestätigungsmeldung anzeigen,
-    // dass der Link gesendet wurde. Vorerst leiten wir
-    // den Benutzer nicht um, sondern er muss seinen Posteingang überprüfen.
+    try {
+      await signIn("resend", {
+        email,
+        redirectTo: "/?welcome=1",  // Nach erfolgreicher Authentifizierung zur Hauptseite weiterleiten (mit Toast-Flag)
+        redirect: false   // Server Action selbst soll nicht weiterleiten
+      });
+      return { ok: true as const };
+    } catch (e) {
+      let message = "Senden fehlgeschlagen. Bitte später erneut versuchen.";
+      if (e instanceof Error) {
+        message = e.message;
+      }
+      return { ok: false as const, error: message };
+    }
   }
 
   return (
     <div className="flex justify-center items-center h-[calc(100vh-200px)]">
-      <Card className="mx-auto max-w-sm">
+      <Card className="mx-auto w-full max-w-sm">
         <CardHeader>
           <CardTitle className="text-2xl">Anmelden</CardTitle>
           <CardDescription>
@@ -24,21 +35,7 @@ export default function SignInPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={signInAction} className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="email">E-Mail</Label>
-              <Input
-                id="email"
-                type="email"
-                name="email"
-                placeholder="beispiel@domain.com"
-                required
-              />
-            </div>
-            <Button type="submit" className="w-full">
-              Magic Link senden
-            </Button>
-          </form>
+          <MagicLinkForm action={signInAction} />
         </CardContent>
       </Card>
     </div>

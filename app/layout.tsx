@@ -3,7 +3,9 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import AuthProvider from "@/components/auth-provider";
-import { SignIn, UserInfo } from "@/components/auth-components";
+import AppToaster from "@/components/app-toaster";
+import { UserInfo } from "@/components/auth-components";
+import SignInLink from "@/components/sign-in-link";
 import { auth } from "@/auth";
 
 const inter = Inter({
@@ -30,11 +32,14 @@ export default function RootLayout({
           inter.variable
         )}
       >
+        {/* Render the Server Component header outside of the Client Provider
+            to avoid mixing Server Components inside a Client boundary. */}
+        <Header />
         <AuthProvider>
-          <Header />
           <main className="">
             {children}
           </main>
+          <AppToaster />
         </AuthProvider>
       </body>
     </html>
@@ -45,8 +50,8 @@ async function Header() {
   const session = await auth();
   return (
     <header className="p-3 border-b">
-      <div className="mx-auto max-w-6xl flex items-center justify-end gap-2">
-        {session?.user ? <UserInfo /> : <SignIn />}
+      <div className="mx-auto max-w-6xl w-full flex items-center justify-end gap-2">
+        {session?.user ? <UserInfo /> : <SignInLink />}
       </div>
     </header>
   )

@@ -118,6 +118,18 @@ export default function UrlToImagePage() {
   const [url, setUrl] = useState("");
   const [selectedStyleId, setSelectedStyleId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  // Willkommen-Toast nach erfolgreichem Login via Magic Link
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("welcome") === "1") {
+      toast.success("Willkommen zurück!");
+      params.delete("welcome");
+      const search = params.toString();
+      const nextUrl = window.location.pathname + (search ? `?${search}` : "") + window.location.hash;
+      window.history.replaceState(null, "", nextUrl);
+    }
+  }, []);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [loadingMessage, setLoadingMessage] = useState("");
   const [generatedPrompt, setGeneratedPrompt] = useState<string | null>(null);
