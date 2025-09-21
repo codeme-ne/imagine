@@ -8,7 +8,6 @@ import { ArrowLeft, Download, CheckCircle, Loader2, ClipboardCopy } from "lucide
 import React from "react";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
-import CreditsBadge from "@/components/credits-badge";
 // Dialog imports removed: API key modal no longer needed
 
 // Define an interface for the image style options
@@ -599,9 +598,7 @@ The final prompt should read naturally as ONE complete instruction, not a list o
   return (
   <div className="px-4 sm:container py-6 sm:py-10 mx-auto font-sans" style={{ maxWidth: 720 }}>
       <>
-          <div className="mb-3 flex justify-end">
-            <CreditsBadge />
-          </div>
+          {/* Credits + plans moved to global header */}
           <UrlToImageProgressBar activeStep={currentStep} />
 
           <div className="bg-card p-6 sm:p-8 rounded-[10px] border ">

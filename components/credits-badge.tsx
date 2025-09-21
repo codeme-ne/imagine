@@ -2,6 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 type CreditsInfo = {
   credits: number;
@@ -66,9 +72,33 @@ export default function CreditsBadge() {
       <div className="rounded-md border px-2.5 py-1 text-xs text-foreground bg-card">
         Credits: <span className="font-semibold">{info?.credits ?? "—"}</span>
       </div>
-      <div className="flex gap-1">
+
+      {/* Mobile: compact dropdown */}
+      <div className="sm:hidden">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button size="sm" variant="outline" disabled={!!buying}>
+              {buying ? "…" : "Buy"}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-48">
+            <DropdownMenuItem onClick={() => startCheckout("starter")} disabled={!!buying}>
+              Starter · €5 (20)
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => startCheckout("creator")} disabled={!!buying}>
+              Creator · €12 (60)
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => startCheckout("pro")} disabled={!!buying}>
+              Pro · €35 (200)
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      {/* ≥ sm: individual plan buttons, shorter labels to avoid squish */}
+      <div className="hidden sm:flex gap-1">
         <Button size="sm" variant="outline" onClick={() => startCheckout("starter")} disabled={!!buying}>
-          {buying === "starter" ? "…" : "Buy Starter"}
+          {buying === "starter" ? "…" : "Starter"}
         </Button>
         <Button size="sm" variant="outline" onClick={() => startCheckout("creator")} disabled={!!buying}>
           {buying === "creator" ? "…" : "Creator"}

@@ -7,6 +7,7 @@ import AppToaster from "@/components/app-toaster";
 import { UserInfo } from "@/components/auth-components";
 import SignInLink from "@/components/sign-in-link";
 import { auth } from "@/auth";
+import CreditsBadge from "@/components/credits-badge";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -49,9 +50,14 @@ export default function RootLayout({
 async function Header() {
   const session = await auth();
   return (
-    <header className="p-3 border-b">
-      <div className="mx-auto max-w-6xl w-full flex items-center justify-end gap-2">
-        {session?.user ? <UserInfo /> : <SignInLink />}
+    <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="mx-auto max-w-6xl w-full px-3 py-2 flex items-center justify-between gap-2">
+        <div className="min-w-0 flex items-center gap-2 overflow-x-auto whitespace-nowrap">
+          {session?.user ? <CreditsBadge /> : null}
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          {session?.user ? <UserInfo /> : <SignInLink />}
+        </div>
       </div>
     </header>
   )
