@@ -1,30 +1,37 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+import { auth } from '@/auth';
 
-const isAppRoute = createRouteMatcher(["/"]); // Protect the app interface at root
-const isLanding = createRouteMatcher(["/landing"]);
+const isAppRoute = (pathname: string) => pathname === '/';
+const isLandingRoute = (pathname: string) => pathname === '/landing';
 
-export default clerkMiddleware(async (auth, req) => {
-  const { userId } = await auth();
+export async function middleware(request: NextRequest) {
+  const session = await auth();
+  const { pathname } = request.nextUrl;
 
-  // Require auth for the app interface
-  if (isAppRoute(req)) {
-    if (!userId) {
-      return NextResponse.redirect(new URL("/landing", req.url));
-    }
+  const userIsOnApp = isAppRoute(pathname);
+  const userIsOnLanding = isLandingRoute(pathname);
+  
+  if (userIsOnApp && !session) {
+    // Benutzer ist auf der App-Seite, aber nicht angemeldet -> zur Landing-Page umleiten
+    return NextResponse.redirect(new URL('/landing', request.url));
   }
 
-  // If a signed-in user hits /landing, send them to the app
-  if (userId && isLanding(req)) {
-    return NextResponse.redirect(new URL("/", req.url));
+  if (userIsOnLanding && session) {
+    // Benutzer ist auf der Landing-Page, aber bereits angemeldet -> zur App umleiten
+    return NextResponse.redirect(new URL('/', request.url));
   }
-});
+  
+  // In allen anderen Fällen (z.B. Auth-Routen oder wenn die Bedingungen nicht zutreffen),
+  // fahre normal fort.
+  return NextResponse.next();
+}
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    // Always run for API routes
-    "/(api|trpc)(.*)",
+    // Next.js-Interna und alle statischen Dateien überspringen
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    // Immer für API-Routen ausführen
+    '/(api|trpc)(.*)',
   ],
-};
+}
