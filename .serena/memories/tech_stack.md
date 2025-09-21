@@ -1,0 +1,9 @@
+- Framework: Next.js (v15.3.2) with App Router and Turbopack
+- Language: TypeScript (v5)
+- UI: React (v19), Tailwind CSS (v4), shadcn/ui (using radix-ui components)
+- AI & Image Generation:
+  - `@ai-sdk/google` for Google Gemini
+  - `@fal-ai/client` for Imagen 4
+- Content Extraction: `@mendable/firecrawl-js`
+- Rate Limiting: `@upstash/ratelimit` and `@upstash/redis`
+- Deployment: Vercel (indicated by vercel.json and Vercel deploy button in README)

@@ -6,7 +6,6 @@ import { Flame } from "lucide-react";
 import { Bot } from "lucide-react";
 import { ImagePlus } from "lucide-react"; 
 import { FileJson } from "lucide-react";
-import { SignUpButton } from "@clerk/nextjs";
 
 
 export const metadata: Metadata = {
@@ -54,9 +53,9 @@ export default function LandingPage() {
               <h1 className="text-4xl md:text-5xl font-semibold tracking-tight text-foreground">Turn any URL into a stunning visual. Instantly.</h1>
               <p className="mt-4 text-base md:text-lg text-muted-foreground">Create on-brand social posts, blog graphics, and marketing visuals in minutes. Save hours each week and say goodbye to expensive freelancers and complicated design tools.</p>
               <div className="mt-4 flex flex-wrap items-center gap-3">
-                <SignUpButton>
-                  <Button variant="outline" className="cursor-pointer">Generate your first image</Button>
-                </SignUpButton>
+                <Button asChild>
+                  <Link href="/auth/signin">Generate your first image</Link>
+                </Button>
               </div>
               <div className="mt-3 flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
                 {["Ghibli", "LEGO", "Claymation", "Logo", "Whimsical", "Sumi-e"].map(
@@ -153,7 +152,7 @@ export default function LandingPage() {
           </ol>
           <div className="mt-6 flex items-center gap-3">
             <Button asChild variant="outline" >
-              <Link href="/">Try it for free</Link>
+              <Link href="/auth/signin">Try it for free</Link>
             </Button>
             <span className="text-xs text-muted-foreground">It usually takes ~5–10 seconds.</span>
           </div>
@@ -248,7 +247,7 @@ export default function LandingPage() {
               </ul>
               <div className="mt-5">
                 <Button asChild>
-                  <Link href="/">Generate from a URL</Link>
+                  <Link href="/auth/signin">Generate from a URL</Link>
                 </Button>
               </div>
             </div>
