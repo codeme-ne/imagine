@@ -17,8 +17,8 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Grant free trial on first login/access
-  await ensureTrial(userId, 2);
+  // Grant free trial on first login/access (1 credit)
+  await ensureTrial(userId, 1);
 
   const [balance, dailyRemaining] = await Promise.all([
     getCredits(userId),

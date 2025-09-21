@@ -2,6 +2,8 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { GoogleGenerativeAIProviderOptions } from '@ai-sdk/google';
 import { streamText } from 'ai';
 import { isRateLimited } from '@/lib/rate-limit';
+import { auth } from '@/auth';
+import { ensureTrial, getCredits } from '@/lib/credits';
 import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
@@ -21,6 +23,29 @@ export async function POST(req: NextRequest) {
           },
         },
       );
+    }
+
+    // Enforce auth + credits gating (no debit here, just gate expensive ops)
+    const session = await auth();
+    if (!session?.user) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { 'Content-Type': 'application/json' } });
+    }
+    const user = session.user as { id?: string; email?: string };
+    const userId = user.id || user.email || '';
+    if (!userId) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { 'Content-Type': 'application/json' } });
+    }
+    // Grant 1 trial credit once (Imagen will actually debit; here we just make sure badge initializes)
+    await ensureTrial(userId, 1);
+    const creditBalance = await getCredits(userId);
+    if (creditBalance <= 0) {
+      return new Response(JSON.stringify({ error: 'You are out of credits. Buy credits to continue.' }), {
+        status: 402,
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Credits-Remaining': '0',
+        },
+      });
     }
 
     const { prompt } = await req.json();

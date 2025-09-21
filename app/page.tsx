@@ -119,6 +119,7 @@ export default function UrlToImagePage() {
   const [url, setUrl] = useState("");
   const [selectedStyleId, setSelectedStyleId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [credits, setCredits] = useState<number | null>(null);
   // Willkommen-Toast nach erfolgreichem Login via Magic Link
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -129,6 +130,22 @@ export default function UrlToImagePage() {
       const search = params.toString();
       const nextUrl = window.location.pathname + (search ? `?${search}` : "") + window.location.hash;
       window.history.replaceState(null, "", nextUrl);
+    }
+  }, []);
+  // Load credits on mount and after purchase success
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await fetch('/api/credits', { cache: 'no-store' });
+        if (!res.ok) return;
+        const data = await res.json();
+        setCredits(typeof data?.credits === 'number' ? data.credits : null);
+      } catch {}
+    };
+    load();
+    if (typeof window !== 'undefined') {
+      const p = new URLSearchParams(window.location.search);
+      if (p.get('purchase') === 'success') load();
     }
   }, []);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
@@ -158,6 +175,11 @@ export default function UrlToImagePage() {
   };
 
   const handleStyleSelect = async (styleId: string) => {
+    // Block scraping if out of credits
+    if (credits !== null && credits <= 0) {
+      setError('You are out of credits. Buy credits to continue.');
+      return;
+    }
     setSelectedStyleId(styleId);
 
     // Initialize the style prompt with the selected style's prompt
@@ -539,6 +561,15 @@ The final prompt should read naturally as ONE complete instruction, not a list o
           <UrlToImageProgressBar activeStep={currentStep} />
 
           <div className="bg-card p-6 sm:p-8 rounded-[10px] border ">
+            {credits !== null && credits <= 0 && (
+              <div className="mb-4 p-3 bg-yellow-100 border border-yellow-300 text-yellow-900 rounded-md flex items-center justify-between">
+                <div>
+                  <p className="font-semibold">You are out of credits</p>
+                  <p className="text-sm">Buy a pack to scrape, generate prompts and images.</p>
+                </div>
+                <Button onClick={() => startCheckout('starter')} variant="outline" size="sm">Buy Starter</Button>
+              </div>
+            )}
             {error && (
               <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md">
                 <p className="font-semibold">Error:</p>

@@ -64,8 +64,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  // Grant free trial (2 credits) once per user on first use
-  await ensureTrial(userId, 2);
+  // Grant free trial (1 credit) once per user on first use
+  await ensureTrial(userId, 1);
 
   let apiKey = process.env.FAL_KEY;
   

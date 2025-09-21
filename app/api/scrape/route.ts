@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import FirecrawlApp from '@mendable/firecrawl-js';
 import { isRateLimited } from '@/lib/rate-limit';
+import { auth } from '@/auth';
+import { ensureTrial, getCredits } from '@/lib/credits';
 
 // Ensure we run on Node.js runtime (Firecrawl SDK requires Node APIs) and avoid caching
 export const runtime = 'nodejs';
@@ -59,6 +61,22 @@ export async function POST(request: NextRequest) {
         'X-RateLimit-Remaining': rateLimit.remaining.toString(),
       }
     });
+  }
+
+  // Enforce auth + credits gating before using Firecrawl
+  const session = await auth();
+  if (!session?.user) {
+    return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+  }
+  const user = session.user as { id?: string; email?: string };
+  const userId = user.id || user.email || '';
+  if (!userId) {
+    return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+  }
+  await ensureTrial(userId, 1);
+  const balance = await getCredits(userId);
+  if (balance <= 0) {
+    return NextResponse.json({ success: false, error: 'You are out of credits. Buy credits to continue.' }, { status: 402, headers: { 'X-Credits-Remaining': '0' } });
   }
 
   let apiKey = process.env.FIRECRAWL_API_KEY;
