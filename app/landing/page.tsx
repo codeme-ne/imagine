@@ -44,6 +44,8 @@ export default function LandingPage() {
     { n: 6, t: "Download & share" },
   ];
 
+  const hasTestimonials = false;
+
   return (
     <div className="min-h-screen font-sans">
       {/* Hero */}
@@ -170,28 +172,59 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="px-6 md:px-8 py-12 md:py-16">
-        <div className="mx-auto w-full max-w-xl md:max-w-3xl lg:max-w-6xl">
-          <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-center text-foreground">
-            Loved by Marketers, Makers, and Developers
-          </h2>
-          <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="rounded-lg border bg-card p-5">
-              <p className="text-sm text-muted-foreground">&quot;This is a game-changer for our content workflow. We went from spending hours in Figma to generating stunning, on-brand images in seconds.&quot;</p>
-              <p className="mt-4 text-sm font-semibold text-foreground">- Head of Marketing, SaaS Startup</p>
-            </div>
-            <div className="rounded-lg border bg-card p-5">
-              <p className="text-sm text-muted-foreground">&quot;As an indie hacker, I wear a lot of hats. This tool lets me create professional-looking visuals for my projects without having to hire a designer.&quot;</p>
-              <p className="mt-4 text-sm font-semibold text-foreground">- Solo Founder & Developer</p>
-            </div>
-            <div className="rounded-lg border bg-card p-5">
-              <p className="text-sm text-muted-foreground">&quot;The image quality is incredible, and the fact that it&apos;s built on a solid, transparent tech stack gives me a lot of confidence.&quot;</p>
-              <p className="mt-4 text-sm font-semibold text-foreground">- Senior Frontend Engineer</p>
+      {/* Social proof */}
+      {hasTestimonials ? (
+        <section className="px-6 md:px-8 py-12 md:py-16">
+          <div className="mx-auto w-full max-w-xl md:max-w-3xl lg:max-w-6xl">
+            <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-center text-foreground">
+              Loved by Marketers, Makers, and Developers
+            </h2>
+            <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="rounded-lg border bg-card p-5">
+                <p className="text-sm text-muted-foreground">&quot;This is a game-changer for our content workflow. We went from spending hours in Figma to generating stunning, on-brand images in seconds.&quot;</p>
+                <p className="mt-4 text-sm font-semibold text-foreground">- Head of Marketing, SaaS Startup</p>
+              </div>
+              <div className="rounded-lg border bg-card p-5">
+                <p className="text-sm text-muted-foreground">&quot;As an indie hacker, I wear a lot of hats. This tool lets me create professional-looking visuals for my projects without having to hire a designer.&quot;</p>
+                <p className="mt-4 text-sm font-semibold text-foreground">- Solo Founder & Developer</p>
+              </div>
+              <div className="rounded-lg border bg-card p-5">
+                <p className="text-sm text-muted-foreground">&quot;The image quality is incredible, and the fact that it&apos;s built on a solid, transparent tech stack gives me a lot of confidence.&quot;</p>
+                <p className="mt-4 text-sm font-semibold text-foreground">- Senior Frontend Engineer</p>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : (
+        <section className="px-6 md:px-8 py-12 md:py-16">
+          <div className="mx-auto w-full max-w-xl md:max-w-3xl lg:max-w-6xl">
+            <div className="rounded-lg border bg-card p-6">
+              <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-foreground">
+                From the builder
+              </h2>
+              <p className="mt-3 text-sm text-muted-foreground">
+                I started by playing with the Firecrawl examples on GitHub and turned the idea into a tool I use for my own blog, <a href="https://www.neurohackingly.com" className="underline" target="_blank" rel="noreferrer">neurohackingly.com</a>. Making graphics that truly add value was hard—this app makes it fast.
+              </p>
+              <p className="mt-3 text-sm text-muted-foreground">
+                I’m making it public so you don’t need to clone a repo or wire API keys. Use a prebuilt app and top up credits when needed.
+              </p>
+              <ul className="mt-4 text-sm text-muted-foreground list-disc pl-5">
+                <li>Paste a URL, pick a style, get an on‑brand visual in ~5–10s</li>
+                <li>1 free credit on first sign‑in; pay‑as‑you‑go credits</li>
+                <li>Open‑source stack; view the source <a href="https://github.com/codeme-ne/imagine" className="underline" target="_blank" rel="noreferrer">on GitHub</a></li>
+              </ul>
+              <div className="mt-5 flex items-center gap-3">
+                <Button asChild>
+                  <Link href="/auth/signin">Try it free</Link>
+                </Button>
+                <a href="https://github.com/codeme-ne/imagine" target="_blank" rel="noreferrer" className="text-sm underline">
+                  View source
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Style presets */}
       <section className="px-6 md:px-8 py-12 md:py-16">
@@ -243,7 +276,13 @@ export default function LandingPage() {
                 <p className="mt-3 text-sm text-muted-foreground">{p.blurb}</p>
                 <div className="mt-5">
                   <Button asChild className="w-full">
-                    <Link href="/auth/signin">Sign in to buy</Link>
+                    <Link href="/auth/signin">
+                      {p.pack === 'starter'
+                        ? 'Generate your first image'
+                        : p.pack === 'creator'
+                          ? 'Paste a URL and create'
+                          : 'Create campaign visuals now'}
+                    </Link>
                   </Button>
                 </div>
               </div>
@@ -258,35 +297,68 @@ export default function LandingPage() {
           <div className="grid gap-6 lg:grid-cols-2">
             <div className="rounded-lg border bg-card p-6">
               <h3 className="text-lg font-semibold text-foreground">Frequently asked</h3>
-              <div className="mt-4 flex flex-col gap-4 text-sm text-muted-foreground">
-                <div>
-                  <p className="font-medium text-foreground">Do I need API keys?</p>
-                  <p>If your environment doesn’t provide a Firecrawl key, you can paste a temporary key for your session. Keys are not stored server‑side.</p>
-                </div>
-                <div>
-                  <p className="font-medium text-foreground">What styles are available?</p>
-                  <p>We include curated presets (Ghibli, LEGO, Claymation, Logo, Whimsical, Sumi‑e). You can also tweak the prompt for custom looks.</p>
-                </div>
-                <div>
-                  <p className="font-medium text-foreground">How does pricing work?</p>
-                  <p>1 credit = 1 image. Scraping and prompt generation are free. You get 1 free credit on first sign‑in.</p>
-                </div>
-                <div>
-                  <p className="font-medium text-foreground">Can I regenerate images?</p>
-                  <p>Yes—up to 3 additional regenerations per prompt (total 4 images per prompt). Each regeneration costs 1 credit.</p>
-                </div>
-                <div>
-                  <p className="font-medium text-foreground">Is there a limit?</p>
-                  <p>We enforce standard per‑IP rate limits for stability.</p>
-                </div>
-                <div>
-                  <p className="font-medium text-foreground">What’s the workflow?</p>
-                  <p>Paste URL → pick style → we extract content → we craft a prompt → we render the image → you download.</p>
-                </div>
-                <div>
-                  <p className="font-medium text-foreground">How do payments work?</p>
-                  <p>We use Stripe Checkout on our existing Stripe account. Buy credit packs as one‑time purchases. Credits don’t expire.</p>
-                </div>
+                <div className="mt-2">
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="faq-keys">
+                    <AccordionTrigger className="text-foreground py-2">Do I need API keys?</AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground pb-2">
+                      No for the hosted app—keys are configured server‑side. The project is open‑source on
+                      <a href="https://github.com/codeme-ne/imagine" className="underline" target="_blank" rel="noreferrer"> GitHub</a>,
+                      so you can self‑host and provide your own keys via environment variables. There’s no in‑app API key entry in the current UI.
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="faq-pricing">
+                    <AccordionTrigger className="text-foreground py-2">How do credits and pricing work?</AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground pb-2">
+                      1 credit = 1 image. No subscriptions or contracts — just pay‑as‑you‑go credit packs via Stripe.
+                      You get 1 free credit on first sign‑in. Credits don’t expire.
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="faq-regen">
+                    <AccordionTrigger className="text-foreground py-2">Can I regenerate images?</AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground pb-2">
+                      Yes—up to 3 additional regenerations per prompt (1 initial + 3). Each regeneration costs 1 credit.
+                      In practice, the first result often nails it, so you may not need to regenerate.
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="faq-limits">
+                    <AccordionTrigger className="text-foreground py-2">Are there any limits?</AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground pb-2">
+                      There’s a daily cap of 100 images per account to keep the service fast for everyone. Standard per‑IP rate limits also apply.
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="faq-styles">
+                    <AccordionTrigger className="text-foreground py-2">What styles are available?</AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground pb-2">
+                      Curated presets include Ghibli, LEGO, Claymation, Logo, Whimsical, and Sumi‑e. We’re constantly adding new styles so your visuals stay fresh and on‑trend.
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="faq-blog-images">
+                    <AccordionTrigger className="text-foreground py-2">Can it help with blog images and social posts?</AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground pb-2">
+                      Yes. No more hunting for stock visuals — paste your article or page URL and we extract the key ideas to generate a fitting, on‑brand graphic in seconds.
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="faq-workflow">
+                    <AccordionTrigger className="text-foreground py-2">What’s the workflow?</AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground pb-2">
+                      Paste a URL → pick a style → we extract content (Firecrawl) → we craft a concise prompt (Gemini) → we render the image (Imagen 4 via Fal.ai) → you download.
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="faq-payments">
+                    <AccordionTrigger className="text-foreground py-2">How do payments work?</AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground pb-2">
+                      We use Stripe Checkout for one‑time purchases of credit packs. Credits are added to your account immediately after payment and don’t expire.
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
               </div>
             </div>
             <div className="rounded-lg border bg-card p-6">
