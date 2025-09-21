@@ -25,6 +25,22 @@ export default function CreditsBadge() {
 
   useEffect(() => {
     load();
+    // Refresh on window focus (user returns to tab)
+    const onFocus = () => { load(); };
+    window.addEventListener('focus', onFocus);
+    // Listen for app-wide credits updates
+    const onCreditsUpdate = (e: Event) => {
+      const ce = e as CustomEvent<number>;
+      const newCredits = typeof ce.detail === 'number' ? ce.detail : undefined;
+      if (typeof newCredits === 'number') {
+        setInfo((prev) => prev ? { ...prev, credits: newCredits } : { credits: newCredits, dailyRemaining: 0, dailyCap: 0 });
+      }
+    };
+    window.addEventListener('credits:update', onCreditsUpdate as EventListener);
+    return () => {
+      window.removeEventListener('focus', onFocus);
+      window.removeEventListener('credits:update', onCreditsUpdate as EventListener);
+    };
   }, []);
 
   const startCheckout = async (pack: "starter" | "creator" | "pro") => {

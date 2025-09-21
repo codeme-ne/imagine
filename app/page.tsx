@@ -434,7 +434,12 @@ The final prompt should read naturally as ONE complete instruction, not a list o
             const rem = imageGenResponse.headers.get('X-Credits-Remaining');
             if (rem !== null) {
               const n = parseInt(rem, 10);
-              if (!Number.isNaN(n)) setCredits(n);
+              if (!Number.isNaN(n)) {
+                setCredits(n);
+                if (typeof window !== 'undefined') {
+                  window.dispatchEvent(new CustomEvent('credits:update', { detail: n }));
+                }
+              }
             }
           } catch {}
           // Out of credits – prompt to buy
@@ -454,7 +459,12 @@ The final prompt should read naturally as ONE complete instruction, not a list o
             const rem = imageGenResponse.headers.get('X-Credits-Remaining');
             if (rem !== null) {
               const n = parseInt(rem, 10);
-              if (!Number.isNaN(n)) setCredits(n);
+              if (!Number.isNaN(n)) {
+                setCredits(n);
+                if (typeof window !== 'undefined') {
+                  window.dispatchEvent(new CustomEvent('credits:update', { detail: n }));
+                }
+              }
             }
           } catch {}
           setError(uiMessage);
@@ -472,7 +482,12 @@ The final prompt should read naturally as ONE complete instruction, not a list o
         const rem = imageGenResponse.headers.get('X-Credits-Remaining');
         if (rem !== null) {
           const n = parseInt(rem, 10);
-          if (!Number.isNaN(n)) setCredits(n);
+          if (!Number.isNaN(n)) {
+            setCredits(n);
+            if (typeof window !== 'undefined') {
+              window.dispatchEvent(new CustomEvent('credits:update', { detail: n }));
+            }
+          }
         }
       } catch {}
       if (!imageGenData.imageBase64) {
