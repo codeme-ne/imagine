@@ -17,6 +17,11 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "URL → Image",
   description: "Turn any website into a beautiful image with AI.",
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    shortcut: ["/icon.svg"],
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({
