@@ -30,7 +30,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Stripe not configured" }, { status: 500 });
   }
 
-  const { pack }: { pack?: Pack } = await req.json().catch(() => ({}));
+  const { pack, promoCode }: { pack?: Pack; promoCode?: string } = await req
+    .json()
+    .catch(() => ({} as { pack?: Pack; promoCode?: string }));
   const chosen: Pack = (pack && ["starter", "creator", "pro"].includes(pack)) ? (pack as Pack) : "starter";
   const cfg = packConfig[chosen];
   if (!cfg.priceId) {
@@ -39,15 +41,32 @@ export async function POST(req: NextRequest) {
 
   const origin = req.headers.get("origin") || process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
+  // Optionally pre-apply a promotion code (e.g., 100% off) if provided
+  // Fallback to letting users enter codes on the Checkout page.
+  let discounts: Stripe.Checkout.SessionCreateParams.Discount[] | undefined = undefined;
+  if (promoCode && typeof promoCode === "string" && promoCode.trim().length > 0) {
+    try {
+      const matches = await stripe.promotionCodes.list({ code: promoCode.trim(), active: true, limit: 1 });
+      const found = matches.data[0];
+      if (found?.id) {
+        discounts = [{ promotion_code: found.id }];
+      }
+    } catch {
+      // Ignore promo lookup failures and proceed without a pre-applied discount
+    }
+  }
+
   const checkout = await stripe.checkout.sessions.create({
     mode: "payment",
     payment_method_types: ["card"],
+    allow_promotion_codes: true,
     line_items: [
       {
         price: cfg.priceId,
         quantity: 1,
       },
     ],
+    discounts,
     success_url: `${origin}/?purchase=success`,
     cancel_url: `${origin}/?purchase=cancelled`,
     client_reference_id: userId,
