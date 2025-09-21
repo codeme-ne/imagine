@@ -30,9 +30,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Stripe not configured" }, { status: 500 });
   }
 
-  const { pack, promoCode }: { pack?: Pack; promoCode?: string } = await req
+  const { pack, promoCode, couponId }: { pack?: Pack; promoCode?: string; couponId?: string } = await req
     .json()
-    .catch(() => ({} as { pack?: Pack; promoCode?: string }));
+    .catch(() => ({} as { pack?: Pack; promoCode?: string; couponId?: string }));
   const chosen: Pack = (pack && ["starter", "creator", "pro"].includes(pack)) ? (pack as Pack) : "starter";
   const cfg = packConfig[chosen];
   if (!cfg.priceId) {
@@ -44,15 +44,26 @@ export async function POST(req: NextRequest) {
   // Optionally pre-apply a promotion code (e.g., 100% off) if provided
   // Fallback to letting users enter codes on the Checkout page.
   let discounts: Stripe.Checkout.SessionCreateParams.Discount[] | undefined = undefined;
-  if (promoCode && typeof promoCode === "string" && promoCode.trim().length > 0) {
+  const normalizedPromo = (promoCode || "").trim();
+  const normalizedCoupon = (couponId || "").trim();
+  if (normalizedCoupon) {
+    // Direct coupon application (bypasses promotion code restrictions)
+    discounts = [{ coupon: normalizedCoupon }];
+  } else if (normalizedPromo) {
     try {
-      const matches = await stripe.promotionCodes.list({ code: promoCode.trim(), active: true, limit: 1 });
-      const found = matches.data[0];
-      if (found?.id) {
-        discounts = [{ promotion_code: found.id }];
+      if (/^promo_/.test(normalizedPromo)) {
+        discounts = [{ promotion_code: normalizedPromo }];
+      } else if (/^coupon_/.test(normalizedPromo)) {
+        discounts = [{ coupon: normalizedPromo }];
+      } else {
+        const matches = await stripe.promotionCodes.list({ code: normalizedPromo, active: true, limit: 1 });
+        const found = matches.data[0];
+        if (found?.id) {
+          discounts = [{ promotion_code: found.id }];
+        }
       }
     } catch {
-      // Ignore promo lookup failures and proceed without a pre-applied discount
+      // Ignore lookup failures and proceed without a pre-applied discount
     }
   }
 
@@ -75,7 +86,8 @@ export async function POST(req: NextRequest) {
       credits: String(cfg.defaultCredits),
       pack: chosen,
       app: "imagine",
-      promoCodeAttempt: promoCode ? String(promoCode) : "",
+      promoCodeAttempt: normalizedPromo,
+      couponIdAttempt: normalizedCoupon,
     },
   });
 
