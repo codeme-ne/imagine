@@ -30,9 +30,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Stripe not configured" }, { status: 500 });
   }
 
-  const { pack, promoCode, couponId }: { pack?: Pack; promoCode?: string; couponId?: string } = await req
+  const { pack }: { pack?: Pack } = await req
     .json()
-    .catch(() => ({} as { pack?: Pack; promoCode?: string; couponId?: string }));
+    .catch(() => ({} as { pack?: Pack }));
   const chosen: Pack = (pack && ["starter", "creator", "pro"].includes(pack)) ? (pack as Pack) : "starter";
   const cfg = packConfig[chosen];
   if (!cfg.priceId) {
@@ -41,43 +41,18 @@ export async function POST(req: NextRequest) {
 
   const origin = req.headers.get("origin") || process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
-  // Optionally pre-apply a promotion code (e.g., 100% off) if provided
-  // Fallback to letting users enter codes on the Checkout page.
-  let discounts: Stripe.Checkout.SessionCreateParams.Discount[] | undefined = undefined;
-  const normalizedPromo = (promoCode || "").trim();
-  const normalizedCoupon = (couponId || "").trim();
-  if (normalizedCoupon) {
-    // Direct coupon application (bypasses promotion code restrictions)
-    discounts = [{ coupon: normalizedCoupon }];
-  } else if (normalizedPromo) {
-    try {
-      if (/^promo_/.test(normalizedPromo)) {
-        discounts = [{ promotion_code: normalizedPromo }];
-      } else if (/^coupon_/.test(normalizedPromo)) {
-        discounts = [{ coupon: normalizedPromo }];
-      } else {
-        const matches = await stripe.promotionCodes.list({ code: normalizedPromo, active: true, limit: 1 });
-        const found = matches.data[0];
-        if (found?.id) {
-          discounts = [{ promotion_code: found.id }];
-        }
-      }
-    } catch {
-      // Ignore lookup failures and proceed without a pre-applied discount
-    }
-  }
+  // No pre-applied discounts; promocode handling removed per request
 
   const checkout = await stripe.checkout.sessions.create({
     mode: "payment",
     payment_method_types: ["card"],
-    allow_promotion_codes: true,
+    // Promotion code entry disabled (reverted)
     line_items: [
       {
         price: cfg.priceId,
         quantity: 1,
       },
     ],
-    discounts,
     success_url: `${origin}/?purchase=success`,
     cancel_url: `${origin}/?purchase=cancelled`,
     client_reference_id: userId,
@@ -86,8 +61,6 @@ export async function POST(req: NextRequest) {
       credits: String(cfg.defaultCredits),
       pack: chosen,
       app: "imagine",
-      promoCodeAttempt: normalizedPromo,
-      couponIdAttempt: normalizedCoupon,
     },
   });
 

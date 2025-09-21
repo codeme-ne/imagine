@@ -429,6 +429,14 @@ The final prompt should read naturally as ONE complete instruction, not a list o
         } catch {}
 
         if (status === 402) {
+          // Sync credits from server header if present
+          try {
+            const rem = imageGenResponse.headers.get('X-Credits-Remaining');
+            if (rem !== null) {
+              const n = parseInt(rem, 10);
+              if (!Number.isNaN(n)) setCredits(n);
+            }
+          } catch {}
           // Out of credits – prompt to buy
           setError('You are out of credits. Buy credits to continue.');
           setIsLoading(false);
@@ -441,6 +449,14 @@ The final prompt should read naturally as ONE complete instruction, not a list o
           const uiMessage = /Regeneration limit/i.test(message)
             ? message
             : (isDaily ? 'Temporarily limited. Please try again later.' : 'Please try again later.');
+          // Try to sync credits if header present
+          try {
+            const rem = imageGenResponse.headers.get('X-Credits-Remaining');
+            if (rem !== null) {
+              const n = parseInt(rem, 10);
+              if (!Number.isNaN(n)) setCredits(n);
+            }
+          } catch {}
           setError(uiMessage);
           setIsLoading(false);
           setCurrentStep(4);
@@ -451,6 +467,14 @@ The final prompt should read naturally as ONE complete instruction, not a list o
       }
 
       const imageGenData = await imageGenResponse.json() as ImageGenResponse;
+      // Update credits from response headers on success
+      try {
+        const rem = imageGenResponse.headers.get('X-Credits-Remaining');
+        if (rem !== null) {
+          const n = parseInt(rem, 10);
+          if (!Number.isNaN(n)) setCredits(n);
+        }
+      } catch {}
       if (!imageGenData.imageBase64) {
         console.error("Imagen4 did not return image data:", imageGenData);
         throw new Error('Failed to generate image.');
