@@ -69,6 +69,21 @@ export async function POST(req: NextRequest) {
   const promo = promoKey ? promoConfig[promoKey] : undefined;
   const couponId = promo?.envKey ? process.env[promo.envKey] : undefined;
 
+  // Try to resolve an explicit promotion_code (preserves promo-specific restrictions like first_time_transaction)
+  let promotionCodeId: string | undefined;
+  if (promoKey) {
+    try {
+      const res = await stripe.promotionCodes.list({ code: promoKey, active: true, limit: 1 });
+      const pc = res.data?.[0];
+      if (pc?.id) {
+        promotionCodeId = pc.id;
+      }
+    } catch (e) {
+      // Non-fatal: fall back to coupon if available
+      // console.warn(`Failed to resolve promotion code ${promoKey}:`, e);
+    }
+  }
+
   if (promo && promo.allowedPacks && !promo.allowedPacks.includes(chosen)) {
     return NextResponse.json({ error: "Promotion code not valid for selected pack" }, { status: 400 });
   }
@@ -80,8 +95,13 @@ export async function POST(req: NextRequest) {
   const checkout = await stripe.checkout.sessions.create({
     mode: "payment",
     payment_method_types: ["card"],
-    allow_promotion_codes: !couponId,
-    discounts: couponId ? [{ coupon: couponId }] : undefined,
+    allow_promotion_codes: !couponId && !promotionCodeId,
+    discounts:
+      promotionCodeId
+        ? [{ promotion_code: promotionCodeId }]
+        : couponId
+        ? [{ coupon: couponId }]
+        : undefined,
     line_items: [
       {
         price: cfg.priceId,
