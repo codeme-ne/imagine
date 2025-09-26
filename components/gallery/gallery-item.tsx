@@ -59,18 +59,20 @@ export default function GalleryItem({ item }: GalleryItemProps) {
       
       <CardContent className="p-0">
         {/* Before/After Slider */}
-        <div className="relative aspect-video w-full overflow-hidden">
+        <div className="relative aspect-[4/3] md:aspect-[3/2] w-full overflow-hidden">
           <ReactCompareSlider
             itemOne={
               <ReactCompareSliderImage
                 src={item.beforeImage}
                 alt={`${item.title} - Original`}
+                style={{ objectFit: 'cover' }}
               />
             }
             itemTwo={
               <ReactCompareSliderImage
                 src={item.afterImage}
                 alt={`${item.title} - ${item.style} style`}
+                style={{ objectFit: 'cover' }}
               />
             }
             position={50}
@@ -96,21 +98,23 @@ export default function GalleryItem({ item }: GalleryItemProps) {
               <p className="text-sm text-muted-foreground bg-secondary/50 p-3 rounded-md">
                 {item.prompt}
               </p>
-              <button
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => setShowPrompt(false)}
-                className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                className="h-auto px-2 text-xs text-muted-foreground hover:text-foreground"
               >
                 Hide prompt
-              </button>
+              </Button>
             </div>
           ) : (
             <Button
               variant="outline"
               size="sm"
-              className="w-full"
+              className="w-full gap-2"
               onClick={() => setShowPrompt(true)}
             >
-              <Sparkles className="h-4 w-4 mr-2" />
+              <Sparkles className="h-4 w-4" />
               Reveal the Magic
             </Button>
           )}
@@ -121,16 +125,19 @@ export default function GalleryItem({ item }: GalleryItemProps) {
         {/* Stats */}
         <div className="flex items-center justify-between w-full text-sm text-muted-foreground">
           <div className="flex items-center gap-3">
-            <button
+            <Button
+              type="button"
               onClick={handleLike}
-              className={`flex items-center gap-1 transition-colors ${
-                isLiked ? 'text-red-500' : 'hover:text-foreground'
+              variant="ghost"
+              size="sm"
+              className={`h-8 px-2 gap-1 text-muted-foreground hover:text-foreground ${
+                isLiked ? 'text-rose-500 hover:text-rose-500' : ''
               }`}
               aria-label={isLiked ? 'Unlike' : 'Like'}
             >
               <Heart className={`h-4 w-4 ${isLiked ? 'fill-current' : ''}`} />
               <span>{isLiked ? item.likes + 1 : item.likes}</span>
-            </button>
+            </Button>
             <span className="flex items-center gap-1">
               <Eye className="h-4 w-4" />
               {item.views}
@@ -149,7 +156,7 @@ export default function GalleryItem({ item }: GalleryItemProps) {
           }}
           className="w-full"
         >
-          <Button className="w-full" size="sm">
+          <Button className="w-full gap-2" size="sm" variant="orange">
             Try {item.style} Style
           </Button>
         </Link>

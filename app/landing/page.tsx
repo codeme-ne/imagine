@@ -44,6 +44,25 @@ export default function LandingPage() {
     { n: 6, t: "Download & share" },
   ];
 
+  const stylePresets = [
+    { src: "/url-to-image/1.png", label: "GHIBLI" },
+    { src: "/url-to-image/2.png", label: "LEGO" },
+    { src: "/url-to-image/3.png", label: "CLAYMATION" },
+    { src: "/url-to-image/4.png", label: "LOGO" },
+    { src: "/url-to-image/5.png", label: "WHIMSICAL" },
+    { src: "/url-to-image/6.png", label: "SUMI-E INK WASH" },
+    { src: "/url-to-image/7.png", label: "MINIMAL CORPORATE" },
+    { src: "/url-to-image/8.png", label: "ISOMETRIC 3D" },
+    { src: "/url-to-image/9.png", label: "PHOTOREALISTIC PROFESSIONAL" },
+    { src: "/url-to-image/10.png", label: "GLASSMORPHIC MODERN" },
+    { src: "/url-to-image/11.png", label: "BRUTALIST TECH" },
+  ];
+
+  const styleNames = stylePresets.map((preset) => preset.label);
+  const styleNamesList = styleNames.length > 1
+    ? `${styleNames.slice(0, -1).join(", ")}, and ${styleNames[styleNames.length - 1]}`
+    : styleNames[0] ?? "";
+
   const hasTestimonials = false;
 
   return (
@@ -64,16 +83,12 @@ export default function LandingPage() {
               </div>
               <div className="mt-3">
                 <div className="flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
-                {["Ghibli", "LEGO", "Claymation", "Logo", "Whimsical", "Sumi-e", "Corporate", "3D Isometric", "Bauhaus", "Infographic", "Swiss Design", "Professional"].map(
-                  (style, index, arr) => (
-                    <span key={style} className="flex items-center gap-x-2">
-                      {style}
-                      {index < arr.length - 1 && (
-                        <span className="opacity-50">•</span>
-                      )}
-                    </span>
-                  ),
-                )}
+                {styleNames.map((style, index) => (
+                  <span key={style} className="flex items-center gap-x-2">
+                    {style}
+                    {index < styleNames.length - 1 && <span className="opacity-50">•</span>}
+                  </span>
+                ))}
                 </div>
               </div>
             </div>
@@ -85,6 +100,7 @@ export default function LandingPage() {
                 fill
                 className="object-cover"
                 priority
+                sizes="(min-width: 1280px) 40vw, (min-width: 768px) 45vw, 90vw"
               />
             </div>
           </div>
@@ -122,20 +138,19 @@ export default function LandingPage() {
             Style presets included
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            Choose from curated looks like Ghibli, LEGO, Claymation, Logo, Whimsical, and Sumi‑e—or bring your own prompt.
+            Choose from curated looks like {styleNamesList}—or bring your own prompt.
           </p>
           <div className="mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 md:gap-8">
-            {[
-              { src: "/url-to-image/1.png", label: "Ghibli" },
-              { src: "/url-to-image/2.png", label: "LEGO" },
-              { src: "/url-to-image/3.png", label: "Claymation" },
-              { src: "/url-to-image/4.png", label: "Logo" },
-              { src: "/url-to-image/5.png", label: "Whimsical" },
-              { src: "/url-to-image/6.png", label: "Sumi‑e Ink Wash" },
-            ].map((item) => (
+            {stylePresets.map((item) => (
                 <figure key={item.label} className="overflow-hidden rounded-lg border bg-muted">
                   <div className="relative aspect-square">
-                    <Image src={item.src} alt={item.label} fill className="object-cover" />
+                    <Image
+                      src={item.src}
+                      alt={item.label}
+                      fill
+                      className="object-cover"
+                      sizes="(min-width: 1280px) 18vw, (min-width: 768px) 28vw, 45vw"
+                    />
                   </div>
                   <figcaption className="p-3 text-center text-sm text-muted-foreground">{item.label} </figcaption>
                 </figure>
@@ -336,7 +351,7 @@ export default function LandingPage() {
                   <AccordionItem value="faq-styles">
                     <AccordionTrigger className="text-foreground py-2">What styles are available?</AccordionTrigger>
                     <AccordionContent className="text-muted-foreground pb-2">
-                      Curated presets include Ghibli, LEGO, Claymation, Logo, Whimsical, and Sumi‑e. We’re constantly adding new styles so your visuals stay fresh and on‑trend.
+                      Curated presets include {styleNamesList}. We’re constantly adding new styles so your visuals stay fresh and on‑trend.
                     </AccordionContent>
                   </AccordionItem>
 

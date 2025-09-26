@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { X } from 'lucide-react';
 
 interface GalleryFiltersProps {
@@ -33,23 +34,23 @@ export default function GalleryFilters({
         <h3 className="text-sm font-semibold mb-3">Style</h3>
         <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by style">
           {filters.styles.map((style) => (
-            <button
+            <Button
               key={style}
+              type="button"
               onClick={() => 
                 onFilterChange('style', currentFilters.style === style ? '' : style)
               }
-              className={`
-                px-3 py-1.5 rounded-full text-sm font-medium transition-all
-                ${currentFilters.style === style
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-secondary hover:bg-secondary/80'
-                }
-              `}
+              variant={currentFilters.style === style ? 'orange' : 'outline'}
+              size="sm"
+              className={cn(
+                'capitalize',
+                currentFilters.style === style ? 'shadow-sm' : ''
+              )}
               aria-pressed={currentFilters.style === style}
               aria-label={`Filter by ${style} style`}
             >
               {style}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -59,23 +60,23 @@ export default function GalleryFilters({
         <h3 className="text-sm font-semibold mb-3">Industry</h3>
         <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by industry">
           {filters.industries.map((industry) => (
-            <button
+            <Button
               key={industry}
+              type="button"
               onClick={() => 
                 onFilterChange('industry', currentFilters.industry === industry ? '' : industry)
               }
-              className={`
-                px-3 py-1.5 rounded-full text-sm font-medium transition-all capitalize
-                ${currentFilters.industry === industry
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-secondary hover:bg-secondary/80'
-                }
-              `}
+              variant={currentFilters.industry === industry ? 'orange' : 'outline'}
+              size="sm"
+              className={cn(
+                'capitalize',
+                currentFilters.industry === industry ? 'shadow-sm' : ''
+              )}
               aria-pressed={currentFilters.industry === industry}
               aria-label={`Filter by ${industry} industry`}
             >
               {industry.replace('-', ' ')}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -85,23 +86,23 @@ export default function GalleryFilters({
         <h3 className="text-sm font-semibold mb-3">Use Case</h3>
         <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by use case">
           {filters.useCases.map((useCase) => (
-            <button
+            <Button
               key={useCase}
+              type="button"
               onClick={() => 
                 onFilterChange('useCase', currentFilters.useCase === useCase ? '' : useCase)
               }
-              className={`
-                px-3 py-1.5 rounded-full text-sm font-medium transition-all capitalize
-                ${currentFilters.useCase === useCase
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-secondary hover:bg-secondary/80'
-                }
-              `}
+              variant={currentFilters.useCase === useCase ? 'orange' : 'outline'}
+              size="sm"
+              className={cn(
+                'capitalize',
+                currentFilters.useCase === useCase ? 'shadow-sm' : ''
+              )}
               aria-pressed={currentFilters.useCase === useCase}
               aria-label={`Filter by ${useCase} use case`}
             >
               {useCase}
-            </button>
+            </Button>
           ))}
         </div>
       </div>

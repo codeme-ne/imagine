@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 
 // Pricing tiers configuration matching existing Stripe setup
-export const pricingTiers = [
+const pricingTiers = [
   {
     id: 'starter',
     name: 'Starter',
@@ -32,7 +32,7 @@ export const pricingTiers = [
     description: 'For regular content creators',
     features: [
       '60 AI-generated images',
-      'All 6 image styles',
+      'All 11 image styles',
       'High-resolution downloads',
       'Priority email support',
       '20% savings per credit',
@@ -48,7 +48,7 @@ export const pricingTiers = [
     description: 'Best value for teams and agencies',
     features: [
       '200 AI-generated images',
-      'All 6 image styles',
+      'All 11 image styles',
       'High-resolution downloads',
       'Priority support',
       '30% savings per credit',

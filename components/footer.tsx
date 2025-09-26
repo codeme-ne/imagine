@@ -4,20 +4,20 @@ export default function Footer() {
   return (
     <footer className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60" aria-label="Site Footer">
       <div className="mx-auto max-w-6xl w-full px-4 py-8">
-        <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
+  <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4 text-center sm:text-left">
           {/* Product Section */}
-          <div>
+          <div className="flex flex-col items-center sm:items-start">
             <h3 className="text-sm font-semibold text-foreground mb-3">
-              Produkt
+              Product
             </h3>
             <nav aria-label="Product navigation">
-              <ul className="space-y-2">
+              <ul className="space-y-2 flex flex-col items-center sm:items-start">
                 <li>
                   <Link 
                     href="/" 
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    URL zu Bild Generator
+                    URL to Image Generator
                   </Link>
                 </li>
                 <li>
@@ -25,7 +25,7 @@ export default function Footer() {
                     href="/gallery" 
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    Galerie
+                    Gallery
                   </Link>
                 </li>
                 <li>
@@ -33,7 +33,7 @@ export default function Footer() {
                     href="/pricing" 
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    Preise
+                    Pricing
                   </Link>
                 </li>
               </ul>
@@ -41,26 +41,18 @@ export default function Footer() {
           </div>
 
           {/* Resources Section */}
-          <div>
+          <div className="flex flex-col items-center sm:items-start">
             <h3 className="text-sm font-semibold text-foreground mb-3">
-              Ressourcen
+              Resources
             </h3>
             <nav aria-label="Resources navigation">
-              <ul className="space-y-2">
-                <li>
-                  <Link 
-                    href="/prompt-guide" 
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    Prompt Guide
-                  </Link>
-                </li>
+              <ul className="space-y-2 flex flex-col items-center sm:items-start">
                 <li>
                   <Link 
                     href="/use-cases" 
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    Anwendungsfälle
+                    Use cases
                   </Link>
                 </li>
               </ul>
@@ -68,26 +60,18 @@ export default function Footer() {
           </div>
 
           {/* Company Section */}
-          <div>
+          <div className="flex flex-col items-center sm:items-start">
             <h3 className="text-sm font-semibold text-foreground mb-3">
-              Unternehmen
+              Company
             </h3>
             <nav aria-label="Company navigation">
-              <ul className="space-y-2">
+              <ul className="space-y-2 flex flex-col items-center sm:items-start">
                 <li>
                   <Link 
                     href="/about" 
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    Über uns
-                  </Link>
-                </li>
-                <li>
-                  <Link 
-                    href="/enterprise" 
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    Enterprise
+                    About
                   </Link>
                 </li>
                 <li>
@@ -95,7 +79,7 @@ export default function Footer() {
                     href="mailto:lukas@zangerlcoachingdynamics.com" 
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    Kontakt
+                    Contact
                   </a>
                 </li>
               </ul>
@@ -103,18 +87,18 @@ export default function Footer() {
           </div>
 
           {/* Legal Section */}
-          <div>
+          <div className="flex flex-col items-center sm:items-start">
             <h3 className="text-sm font-semibold text-foreground mb-3">
-              Rechtliches
+              Legal
             </h3>
             <nav aria-label="Legal navigation">
-              <ul className="space-y-2">
+              <ul className="space-y-2 flex flex-col items-center sm:items-start">
                 <li>
                   <Link 
                     href="/impressum" 
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    Impressum
+                    Imprint
                   </Link>
                 </li>
                 <li>
@@ -122,7 +106,7 @@ export default function Footer() {
                     href="/datenschutz" 
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    Datenschutzerklärung
+                    Privacy Policy
                   </Link>
                 </li>
                 <li>
@@ -130,7 +114,7 @@ export default function Footer() {
                     href="/agb" 
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    AGB
+                    Terms & Conditions
                   </Link>
                 </li>
               </ul>
@@ -142,7 +126,7 @@ export default function Footer() {
         <div className="mt-8 pt-6 border-t">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} URL → Image. Alle Rechte vorbehalten.
+              © {new Date().getFullYear()} URL → Image. All rights reserved.
             </p>
             <p className="text-sm text-muted-foreground">
               Made with ❤️ in Mönchengladbach

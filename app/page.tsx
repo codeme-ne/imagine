@@ -65,47 +65,43 @@ const imageStyleOptions: ImageStyle[] = [
   },
   {
     id: "style7",
-    name: "MINIMALIST CORPORATE",
-    src: "/url-to-image/7.svg",
+    name: "MINIMAL CORPORATE",
+    src: "/url-to-image/7.png",
     alt: "Clean minimalist corporate style",
-    prompt: "1. White background with single blue accent, clean edges\n2. Neo-grotesque sans-serif, flush-left alignment\n3. Asymmetric blocks, 60% negative space, no gradients"
+    prompt: "1. Apple-like minimalism, center composition, extreme white space\n2. Helvetica Neue typography, high contrast scale, left-aligned\n3. Monochrome palette, single blue accent, soft drop shadows"
   },
   {
     id: "style8",
     name: "ISOMETRIC 3D",
-    src: "/url-to-image/8.svg",
+    src: "/url-to-image/8.png",
     alt: "Isometric 3D business illustration",
-    prompt: "1. 30-degree angled geometric shapes, parallel projection\n2. Smooth gradient fills, calculated drop shadows\n3. Sharp vector edges, 2.5D depth illusion"
+    prompt: "1. 30-degree isometric view, clean geometric perspective\n2. Purple-orange gradient mesh, dramatic cast shadows\n3. Floating geometric shapes, layered composition"
   },
   {
     id: "style9",
-    name: "BAUHAUS GEOMETRIC",
-    src: "/url-to-image/9.svg",
-    alt: "Bauhaus-inspired geometric design",
-    prompt: "1. Red square, blue circle, yellow triangle, black outlines\n2. Off-white background, asymmetric grid\n3. Bold geometric sans-serif uppercase, no textures"
+    name: "PHOTOREALISTIC PROFESSIONAL",
+    src: "/url-to-image/9.png",
+    alt: "Photorealistic business photography",
+    prompt: "1. Corporate photography, shallow DOF, subject focus\n2. Golden hour backlighting, premium material textures\n3. Executive boardroom setting, professional atmosphere"
   },
   {
     id: "style10",
-    name: "INFOGRAPHIC FLOW",
-    src: "/url-to-image/10.svg",
-    alt: "Data visualization infographic style",
-    prompt: "1. Bar charts with connecting flow lines\n2. Blue-green-orange categorical palette\n3. Flat icons with percentage labels, no gradients"
+    name: "GLASSMORPHIC MODERN",
+    src: "/url-to-image/10.png",
+    alt: "Glassmorphic frosted glass interface",
+    prompt: "1. Frosted glass panels, 80% opacity, vibrant backdrop blur\n2. Neon gradient bleeding, translucent layered depth\n3. Thin white borders, floating cards, soft shadows"
   },
   {
     id: "style11",
-    name: "SWISS DESIGN",
-    src: "/url-to-image/11.svg",
-    alt: "Swiss international typography style",
-    prompt: "1. Large Helvetica black text on white, single red rectangle\n2. Flush-left ragged-right, strict grid alignment\n3. 70% white space, no ornaments, high contrast"
-  },
-  {
-    id: "style12",
-    name: "PHOTOREALISTIC PROFESSIONAL",
-    src: "/url-to-image/12.svg",
-    alt: "Photorealistic business photography",
-    prompt: "1. Professional photography style\n2. Natural color grading\n3. High-definition realism"
-  },
+    name: "BRUTALIST TECH",
+    src: "/url-to-image/11.png",
+    alt: "Raw brutalist tech aesthetic",
+    prompt: "1. Raw concrete texture, harsh black blocks, no curves\n2. Monospace terminal font, ASCII elements, stark contrast\n3. Yellow accent on charcoal gray, grid layout"
+  }
 ];
+
+const sectionHeadingClass = "text-2xl sm:text-3xl font-semibold tracking-tight text-foreground text-balance";
+const sectionDescriptionClass = "text-base text-muted-foreground leading-relaxed text-balance";
 
 // Add proper interface for the error type at the top of the file
 // Used for type checking when handling API errors
@@ -689,8 +685,8 @@ The final prompt should read naturally as ONE complete instruction, not a list o
             )}
             {currentStep === 1 && (
               <div>
-                <h2 className="text-xl font-semibold mb-1">Step 1: Enter URL</h2>
-                <p className="text-sm text-muted-foreground mb-4">
+                <h2 className={`${sectionHeadingClass} mb-2`}>Step 1: Enter URL</h2>
+                <p className={`${sectionDescriptionClass} mb-6`}>
                   Provide the URL of the website you want to transform.
                 </p>
 
@@ -716,10 +712,10 @@ The final prompt should read naturally as ONE complete instruction, not a list o
 
             {currentStep === 2 && !isLoading && (
               <div>
-                <h2 className="text-xl font-semibold mb-1">
+                <h2 className={`${sectionHeadingClass} mb-2`}>
                   Step 2: Select Image Style
                 </h2>
-                <p className="text-sm text-muted-foreground mb-6">
+                <p className={`${sectionDescriptionClass} mb-6`}>
                   Choose a style for your generated image. Click the &quot;View Prompt&quot; button to see the style-specific prompt.
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -797,10 +793,10 @@ The final prompt should read naturally as ONE complete instruction, not a list o
 
             {currentStep === 3 && isScrapingComplete && websiteContent && (
               <div>
-                <h2 className="text-xl font-semibold mb-1">
+                <h2 className={`${sectionHeadingClass} mb-2`}>
                   Step 3: Website Content
                 </h2>
-                <p className="text-sm text-muted-foreground mb-4">
+                <p className={`${sectionDescriptionClass} mb-4`}>
                   We extracted the following content from {url}
                 </p>
                 <div className="bg-white dark:bg-zinc-800 border rounded-md mb-6">
@@ -847,7 +843,7 @@ The final prompt should read naturally as ONE complete instruction, not a list o
 
             {currentStep === 4 && (
               <div className="h-auto">
-                <h2 className="text-xl font-semibold mb-1">
+                <h2 className={`${sectionHeadingClass} mb-2`}>
                   Step 4: Generate & Edit Prompt
                 </h2>
 
@@ -964,10 +960,10 @@ The final prompt should read naturally as ONE complete instruction, not a list o
 
             {currentStep === 6 && generatedImage && !isLoading && (
               <div>
-                <h2 className="text-xl font-semibold mb-1">
+                <h2 className={`${sectionHeadingClass} mb-2`}>
                   Step 6: View Your Image!
                 </h2>
-                <p className="text-sm text-muted-foreground mb-4">
+                <p className={`${sectionDescriptionClass} mb-6`}>
                   Here&apos;s the image generated from <span className="font-medium">{url}</span> in the style of {getSelectedStyleName() || "your chosen style"}.
                 </p>
                 <div className="relative group aspect-[4/3] sm:aspect-video rounded-lg overflow-hidden bg-zinc-100 dark:bg-zinc-800 mb-4">
