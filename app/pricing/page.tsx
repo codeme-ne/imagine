@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import PricingClient from './pricing-client';
 
@@ -71,7 +72,18 @@ export default function PricingPage() {
         </p>
       </div>
       
-      <PricingClient tiers={pricingTiers} />
+      <Suspense
+        fallback={
+          <div className="flex justify-center py-24">
+            <div className="space-y-4 text-center">
+              <div className="h-6 w-48 mx-auto rounded-full bg-muted/60 animate-pulse" />
+              <p className="text-muted-foreground">Loading pricing…</p>
+            </div>
+          </div>
+        }
+      >
+        <PricingClient tiers={pricingTiers} />
+      </Suspense>
     </div>
   );
 }
