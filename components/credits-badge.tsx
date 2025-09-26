@@ -49,13 +49,20 @@ export default function CreditsBadge() {
     };
   }, []);
 
-  const startCheckout = async (pack: "starter" | "creator" | "pro") => {
+  const startCheckout = async (
+    pack: "starter" | "creator" | "pro",
+    options?: { promotionCode?: string }
+  ) => {
     try {
       setBuying(pack);
+      const payload: { pack: typeof pack; promotionCode?: string } = { pack };
+      if (options?.promotionCode) {
+        payload.promotionCode = options.promotionCode;
+      }
       const res = await fetch("/api/billing/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pack }),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (data?.url) {

@@ -16,6 +16,30 @@ const packConfig: Record<Pack, { priceId?: string; defaultCredits: number }> = {
   pro: { priceId: process.env.STRIPE_PRICE_PRO, defaultCredits: Number(process.env.CREDITS_PRO ?? 200) },
 };
 
+type PromoConfig = {
+  envKey: string;
+  credits: number;
+  allowedPacks?: Pack[];
+};
+
+const promoConfig: Record<string, PromoConfig> = {
+  STARTER7: {
+    envKey: "STRIPE_COUPON_STARTER7",
+    credits: 7,
+    allowedPacks: ["starter"],
+  },
+  STARTER23: {
+    envKey: "STRIPE_COUPON_STARTER7",
+    credits: 7,
+    allowedPacks: ["starter"],
+  },
+  DANKE23: {
+    envKey: "STRIPE_COUPON_STARTER7",
+    credits: 7,
+    allowedPacks: ["starter"],
+  },
+};
+
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session?.user) {
@@ -30,9 +54,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Stripe not configured" }, { status: 500 });
   }
 
-  const { pack }: { pack?: Pack } = await req
+  const { pack, promotionCode }: { pack?: Pack; promotionCode?: string } = await req
     .json()
-    .catch(() => ({} as { pack?: Pack }));
+    .catch(() => ({} as { pack?: Pack; promotionCode?: string }));
   const chosen: Pack = (pack && ["starter", "creator", "pro"].includes(pack)) ? (pack as Pack) : "starter";
   const cfg = packConfig[chosen];
   if (!cfg.priceId) {
@@ -41,12 +65,23 @@ export async function POST(req: NextRequest) {
 
   const origin = req.headers.get("origin") || process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
-  // No pre-applied discounts; promocode handling removed per request
+  const promoKey = promotionCode?.trim().toUpperCase();
+  const promo = promoKey ? promoConfig[promoKey] : undefined;
+  const couponId = promo?.envKey ? process.env[promo.envKey] : undefined;
+
+  if (promo && promo.allowedPacks && !promo.allowedPacks.includes(chosen)) {
+    return NextResponse.json({ error: "Promotion code not valid for selected pack" }, { status: 400 });
+  }
+
+  if (promo && !couponId) {
+    console.warn(`Promotion code ${promoKey} configured but missing env ${promo.envKey}`);
+  }
 
   const checkout = await stripe.checkout.sessions.create({
     mode: "payment",
     payment_method_types: ["card"],
-    // Promotion code entry disabled (reverted)
+    allow_promotion_codes: !couponId,
+    discounts: couponId ? [{ coupon: couponId }] : undefined,
     line_items: [
       {
         price: cfg.priceId,
@@ -58,9 +93,10 @@ export async function POST(req: NextRequest) {
     client_reference_id: userId,
     customer_email: user.email || undefined,
     metadata: {
-      credits: String(cfg.defaultCredits),
+      credits: String(promo?.credits ?? cfg.defaultCredits),
       pack: chosen,
       app: "imagine",
+      ...(promoKey ? { promotionCode: promoKey } : {}),
     },
   });
 

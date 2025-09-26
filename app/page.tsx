@@ -604,12 +604,19 @@ The final prompt should read naturally as ONE complete instruction, not a list o
     setIsThinking(false);
   };
 
-  const startCheckout = async (pack: 'starter' | 'creator' | 'pro' = 'starter') => {
+  const startCheckout = async (
+    pack: 'starter' | 'creator' | 'pro' = 'starter',
+    options?: { promotionCode?: string }
+  ) => {
     try {
+      const payload: { pack: typeof pack; promotionCode?: string } = { pack };
+      if (options?.promotionCode) {
+        payload.promotionCode = options.promotionCode;
+      }
       const res = await fetch('/api/billing/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pack }),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (data?.url) {

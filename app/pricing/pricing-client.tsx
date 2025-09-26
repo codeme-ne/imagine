@@ -32,6 +32,7 @@ export default function PricingClient({ tiers }: PricingClientProps) {
   const [showVAT, setShowVAT] = useState(true);
   const [vatId, setVatId] = useState('');
   const [isValidVatId, setIsValidVatId] = useState(false);
+  const [promoCode, setPromoCode] = useState<string | null>(null);
   const { data: session } = useSession();
 
   // Note: These are display-only calculations
@@ -83,7 +84,18 @@ export default function PricingClient({ tiers }: PricingClientProps) {
     }
   }, [vatId]);
 
-  const handleCheckout = async (tierId: string) => {
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const fromQuery = params.get('promo') || params.get('promotion') || params.get('promotionCode');
+    if (fromQuery) {
+      setPromoCode(fromQuery.toUpperCase());
+    }
+  }, []);
+
+  const promoAliases = new Set(['STARTER7', 'STARTER23', 'DANKE23']);
+
+  const handleCheckout = async (tierId: string, overridePromoCode?: string) => {
     // If not logged in, redirect to sign in
     if (!session) {
       await signIn('resend', { callbackUrl: '/pricing' });
@@ -94,12 +106,15 @@ export default function PricingClient({ tiers }: PricingClientProps) {
     // Note: VAT display and calculations are for UI only
     // Actual Stripe prices already include German VAT for consumers
     try {
+      const activePromoCode = (overridePromoCode || promoCode || undefined)?.trim();
+      const payload: { pack: string; promotionCode?: string } = { pack: tierId };
+      if (activePromoCode) {
+        payload.promotionCode = activePromoCode.toUpperCase();
+      }
       const res = await fetch('/api/billing/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          pack: tierId // Only send pack ID as expected by existing API
-        }),
+        body: JSON.stringify(payload),
       });
       
       const data = await res.json();
@@ -113,6 +128,21 @@ export default function PricingClient({ tiers }: PricingClientProps) {
 
   return (
     <div className="space-y-8">
+      {promoCode && (
+        <div className="max-w-2xl mx-auto rounded-md border border-green-200 bg-green-50 px-4 py-3 text-green-900">
+          <p className="font-medium">Promotion {promoCode} aktiviert</p>
+          {promoAliases.has(promoCode) ? (
+            <p className="text-sm mt-1">
+              Die erste Starter-Bestellung ist kostenlos. Nach Abschluss werden automatisch 7 Credits gutgeschrieben.
+            </p>
+          ) : (
+            <p className="text-sm mt-1">
+              Der Gutscheincode wird automatisch auf deine nächste Zahlung angewendet.
+            </p>
+          )}
+        </div>
+      )}
+
       {/* VAT and Billing Options */}
       <Card className="max-w-2xl mx-auto">
         <CardHeader>
@@ -175,6 +205,7 @@ export default function PricingClient({ tiers }: PricingClientProps) {
         {tiers.map((tier) => {
           const finalPrice = calculatePrice(tier.price);
           const pricePerCredit = finalPrice / tier.credits;
+          const promoApplies = tier.id === 'starter' && !!promoCode && promoAliases.has(promoCode);
 
           return (
             <Card
@@ -210,6 +241,11 @@ export default function PricingClient({ tiers }: PricingClientProps) {
                   <p className="text-sm font-medium mt-2">
                     {tier.credits} credits • {formatPrice(pricePerCredit)}/credit
                   </p>
+                  {promoApplies && (
+                    <p className="text-sm text-green-600 mt-2">
+                      Promo {promoCode}: Bezahle 0 € und erhalte 7 Credits auf dein Konto.
+                    </p>
+                  )}
                 </div>
 
                 <ul className="space-y-2">
