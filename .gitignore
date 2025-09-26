@@ -12,6 +12,11 @@
 
 # testing
 /coverage
+/playwright-report
+/test-results
+/e2e
+*.test.js
+*.spec.js
 
 # next.js
 /.next/
@@ -19,6 +24,9 @@
 
 # production
 /build
+/dist
+build-output.log
+*.log
 
 # misc
 .DS_Store
@@ -57,7 +65,15 @@ node_modules/
 .env
 # Editor directories and files
 .idea
-.vscode
+.vscode/*
+!.vscode/tasks.json
+!.vscode/settings.json
+.cursor/
+.zed/
+.kiro/
+.kilo/
+.roo/
+.windsurf/
 *.suo
 *.ntvs*
 *.njsproj
@@ -65,6 +81,22 @@ node_modules/
 *.sw?
 # OS specific
 
-# Task files
-# tasks.json
-# tasks/ 
+# Task files (if using TaskMaster)
+.taskmaster/
+tasks.json
+tasks/
+
+# Package manager lock files (only keep pnpm)
+package-lock.json
+yarn.lock
+bun.lockb
+
+# Temporary and cache files
+*.tmp
+*.cache
+.cache/
+tmp/
+temp/
+
+# Serena onboarding
+.serena/ 
