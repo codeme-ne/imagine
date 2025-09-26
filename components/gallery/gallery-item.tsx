@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 
+import Image from 'next/image';
 import Link from 'next/link';
-import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider';
+import { ReactCompareSlider } from 'react-compare-slider';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Copy, Eye, Heart, Sparkles } from 'lucide-react';
@@ -23,9 +24,10 @@ interface GalleryItemProps {
     likes: number;
     views: number;
   };
+  priority?: boolean;
 }
 
-export default function GalleryItem({ item }: GalleryItemProps) {
+export default function GalleryItem({ item, priority = false }: GalleryItemProps) {
   const [showPrompt, setShowPrompt] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   
@@ -62,17 +64,17 @@ export default function GalleryItem({ item }: GalleryItemProps) {
         <div className="relative aspect-[4/3] md:aspect-[3/2] w-full overflow-hidden">
           <ReactCompareSlider
             itemOne={
-              <ReactCompareSliderImage
+              <CompareImage
                 src={item.beforeImage}
                 alt={`${item.title} - Original`}
-                style={{ objectFit: 'cover' }}
+                priority={priority}
               />
             }
             itemTwo={
-              <ReactCompareSliderImage
+              <CompareImage
                 src={item.afterImage}
                 alt={`${item.title} - ${item.style} style`}
-                style={{ objectFit: 'cover' }}
+                priority={priority}
               />
             }
             position={50}
@@ -162,5 +164,29 @@ export default function GalleryItem({ item }: GalleryItemProps) {
         </Link>
       </CardFooter>
     </Card>
+  );
+}
+
+type CompareImageProps = {
+  src: string;
+  alt: string;
+  priority: boolean;
+};
+
+function CompareImage({ src, alt, priority }: CompareImageProps) {
+  return (
+    <div className="relative h-full w-full">
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        className="object-cover"
+        quality={70}
+        loading={priority ? 'eager' : 'lazy'}
+        fetchPriority={priority ? 'high' : 'auto'}
+        placeholder="empty"
+      />
+    </div>
   );
 }

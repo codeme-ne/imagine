@@ -101,8 +101,8 @@ export default function GalleryClient({ galleryData, initialFilters }: GalleryCl
       {/* Gallery Grid */}
       {filteredItems.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredItems.map((item) => (
-            <GalleryItem key={item.id} item={item} />
+          {filteredItems.map((item, index) => (
+            <GalleryItem key={item.id} item={item} priority={index < 3} />
           ))}
         </div>
       ) : (

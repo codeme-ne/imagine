@@ -5,8 +5,21 @@ import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Flame } from "lucide-react";
 import { Bot } from "lucide-react";
-import { ImagePlus } from "lucide-react"; 
+import { ImagePlus } from "lucide-react";
 import { FileJson } from "lucide-react";
+
+import heroMain from "@/public/url-to-image/hero_main.png";
+import style01 from "@/public/url-to-image/1.png";
+import style02 from "@/public/url-to-image/2.png";
+import style03 from "@/public/url-to-image/3.png";
+import style04 from "@/public/url-to-image/4.png";
+import style05 from "@/public/url-to-image/5.png";
+import style06 from "@/public/url-to-image/6.png";
+import style07 from "@/public/url-to-image/7.png";
+import style08 from "@/public/url-to-image/8.png";
+import style09 from "@/public/url-to-image/9.png";
+import style10 from "@/public/url-to-image/10.png";
+import style11 from "@/public/url-to-image/11.png";
 
 
 export const metadata: Metadata = {
@@ -45,18 +58,18 @@ export default function LandingPage() {
   ];
 
   const stylePresets = [
-    { src: "/url-to-image/1.png", label: "GHIBLI" },
-    { src: "/url-to-image/2.png", label: "LEGO" },
-    { src: "/url-to-image/3.png", label: "CLAYMATION" },
-    { src: "/url-to-image/4.png", label: "LOGO" },
-    { src: "/url-to-image/5.png", label: "WHIMSICAL" },
-    { src: "/url-to-image/6.png", label: "SUMI-E INK WASH" },
-    { src: "/url-to-image/7.png", label: "MINIMAL CORPORATE" },
-    { src: "/url-to-image/8.png", label: "ISOMETRIC 3D" },
-    { src: "/url-to-image/9.png", label: "PHOTOREALISTIC PROFESSIONAL" },
-    { src: "/url-to-image/10.png", label: "GLASSMORPHIC MODERN" },
-    { src: "/url-to-image/11.png", label: "BRUTALIST TECH" },
-  ];
+    { src: style01, label: "GHIBLI" },
+    { src: style02, label: "LEGO" },
+    { src: style03, label: "CLAYMATION" },
+    { src: style04, label: "LOGO" },
+    { src: style05, label: "WHIMSICAL" },
+    { src: style06, label: "SUMI-E INK WASH" },
+    { src: style07, label: "MINIMAL CORPORATE" },
+    { src: style08, label: "ISOMETRIC 3D" },
+    { src: style09, label: "PHOTOREALISTIC PROFESSIONAL" },
+    { src: style10, label: "GLASSMORPHIC MODERN" },
+    { src: style11, label: "BRUTALIST TECH" },
+  ] as const;
 
   const styleNames = stylePresets.map((preset) => preset.label);
   const styleNamesList = styleNames.length > 1
@@ -95,11 +108,13 @@ export default function LandingPage() {
 
             <div className="relative aspect-[4/3] overflow-hidden rounded-lg border bg-muted">
               <Image
-                src="/url-to-image/hero_main.png"
+                src={heroMain}
                 alt="Hero visual generated from a URL"
                 fill
                 className="object-cover"
                 priority
+                placeholder="blur"
+                quality={75}
                 sizes="(min-width: 1280px) 40vw, (min-width: 768px) 45vw, 90vw"
               />
             </div>
@@ -149,6 +164,9 @@ export default function LandingPage() {
                       alt={item.label}
                       fill
                       className="object-cover"
+                      placeholder="blur"
+                      quality={70}
+                      loading="lazy"
                       sizes="(min-width: 1280px) 18vw, (min-width: 768px) 28vw, 45vw"
                     />
                   </div>
