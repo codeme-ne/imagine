@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -9,7 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Check, CreditCard, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-import { signIn, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 interface PricingTier {
   id: string;
@@ -33,6 +34,9 @@ export default function PricingClient({ tiers }: PricingClientProps) {
   const [vatId, setVatId] = useState('');
   const [isValidVatId, setIsValidVatId] = useState(false);
   const [promoCode, setPromoCode] = useState<string | null>(null);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const autoCheckoutTriggeredRef = useRef(false);
   const { data: session } = useSession();
 
   // Note: These are display-only calculations
@@ -95,36 +99,77 @@ export default function PricingClient({ tiers }: PricingClientProps) {
 
   const promoAliases = new Set(['STARTER7', 'STARTER23', 'DANKE23']);
 
-  const handleCheckout = async (tierId: string, overridePromoCode?: string) => {
-    // If not logged in, redirect to sign in
+  const handleCheckout = useCallback(
+    async (tierId: string, overridePromoCode?: string, options?: { skipAuthRedirect?: boolean }) => {
+      const activePromoCode = (overridePromoCode || promoCode || undefined)?.trim()?.toUpperCase();
+
+      // If not logged in, redirect to sign-in with callback
+      if (!session && !options?.skipAuthRedirect) {
+        const callbackParams = new URLSearchParams({ checkout: tierId });
+        if (activePromoCode) {
+          callbackParams.set('promo', activePromoCode);
+        }
+
+        const callbackUrl = `/pricing?${callbackParams.toString()}`;
+
+        const signInParams = new URLSearchParams();
+        signInParams.set('callbackUrl', callbackUrl);
+        signInParams.set('plan', tierId);
+        if (activePromoCode) {
+          signInParams.set('promo', activePromoCode);
+        }
+
+        router.push(`/auth/signin?${signInParams.toString()}`);
+        return;
+      }
+
+      try {
+        const payload: { pack: string; promotionCode?: string } = { pack: tierId };
+        if (activePromoCode) {
+          payload.promotionCode = activePromoCode;
+        }
+
+        const res = await fetch('/api/billing/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        const data = await res.json();
+        if (data.url) {
+          window.location.href = data.url;
+        }
+      } catch (error) {
+        console.error('Checkout error:', error);
+      }
+    },
+    [promoCode, router, session]
+  );
+
+  // Auto-resume checkout after successful login when callback params are present
+  useEffect(() => {
     if (!session) {
-      await signIn('resend', { callbackUrl: '/pricing' });
+      autoCheckoutTriggeredRef.current = false;
       return;
     }
 
-    // Use existing checkout flow - only pass the pack parameter
-    // Note: VAT display and calculations are for UI only
-    // Actual Stripe prices already include German VAT for consumers
-    try {
-      const activePromoCode = (overridePromoCode || promoCode || undefined)?.trim();
-      const payload: { pack: string; promotionCode?: string } = { pack: tierId };
-      if (activePromoCode) {
-        payload.promotionCode = activePromoCode.toUpperCase();
-      }
-      const res = await fetch('/api/billing/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      }
-    } catch (error) {
-      console.error('Checkout error:', error);
+    if (!searchParams) {
+      return;
     }
-  };
+
+    const checkoutPlan = searchParams.get('checkout');
+    if (!checkoutPlan || autoCheckoutTriggeredRef.current) {
+      return;
+    }
+
+    autoCheckoutTriggeredRef.current = true;
+    const promoFromQuery = searchParams.get('promo') || undefined;
+
+    // Remove the query params to avoid repeated triggers
+    router.replace('/pricing');
+
+    void handleCheckout(checkoutPlan, promoFromQuery ?? undefined, { skipAuthRedirect: true });
+  }, [handleCheckout, router, searchParams, session]);
 
   return (
     <div className="space-y-8">

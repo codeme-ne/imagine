@@ -78,9 +78,8 @@ export async function POST(req: NextRequest) {
       if (pc?.id) {
         promotionCodeId = pc.id;
       }
-    } catch (e) {
-      // Non-fatal: fall back to coupon if available
-      // console.warn(`Failed to resolve promotion code ${promoKey}:`, e);
+    } catch (error) {
+      console.warn(`Failed to resolve promotion code ${promoKey}:`, error);
     }
   }
 
