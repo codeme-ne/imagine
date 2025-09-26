@@ -1,0 +1,43 @@
+<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="400" fill="#ffffff"/>
+
+  <!-- Swiss grid system -->
+  <line x1="100" y1="0" x2="100" y2="400" stroke="#000" stroke-width="1" opacity="0.2"/>
+  <line x1="200" y1="0" x2="200" y2="400" stroke="#000" stroke-width="1" opacity="0.2"/>
+  <line x1="300" y1="0" x2="300" y2="400" stroke="#000" stroke-width="1" opacity="0.2"/>
+  <line x1="0" y1="100" x2="400" y2="100" stroke="#000" stroke-width="1" opacity="0.2"/>
+  <line x1="0" y1="200" x2="400" y2="200" stroke="#000" stroke-width="1" opacity="0.2"/>
+  <line x1="0" y1="300" x2="400" y2="300" stroke="#000" stroke-width="1" opacity="0.2"/>
+
+  <!-- Main elements with asymmetric balance -->
+  <rect x="0" y="0" width="200" height="100" fill="#000000"/>
+  <rect x="300" y="200" width="100" height="200" fill="#ff0000"/>
+
+  <!-- Typography elements -->
+  <text x="20" y="60" font-family="Helvetica, Arial, sans-serif" font-size="36" font-weight="bold" fill="#ffffff">
+    SWISS
+  </text>
+
+  <text x="20" y="140" font-family="Helvetica, Arial, sans-serif" font-size="72" font-weight="300" fill="#000000">
+    D
+  </text>
+  <text x="70" y="140" font-family="Helvetica, Arial, sans-serif" font-size="72" font-weight="300" fill="#000000">
+    E
+  </text>
+  <text x="120" y="140" font-family="Helvetica, Arial, sans-serif" font-size="72" font-weight="300" fill="#000000">
+    S
+  </text>
+  <text x="170" y="140" font-family="Helvetica, Arial, sans-serif" font-size="72" font-weight="300" fill="#000000">
+    I
+  </text>
+  <text x="195" y="140" font-family="Helvetica, Arial, sans-serif" font-size="72" font-weight="300" fill="#000000">
+    G
+  </text>
+  <text x="250" y="140" font-family="Helvetica, Arial, sans-serif" font-size="72" font-weight="300" fill="#000000">
+    N
+  </text>
+
+  <!-- Small accent elements -->
+  <rect x="20" y="350" width="60" height="4" fill="#ff0000"/>
+  <rect x="100" y="370" width="40" height="4" fill="#000000"/>
+</svg>

@@ -64,7 +64,7 @@ export default function LandingPage() {
               </div>
               <div className="mt-3">
                 <div className="flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
-                {["Ghibli", "LEGO", "Claymation", "Logo", "Whimsical", "Sumi-e"].map(
+                {["Ghibli", "LEGO", "Claymation", "Logo", "Whimsical", "Sumi-e", "Corporate", "3D Isometric", "Bauhaus", "Infographic", "Swiss Design", "Professional"].map(
                   (style, index, arr) => (
                     <span key={style} className="flex items-center gap-x-2">
                       {style}

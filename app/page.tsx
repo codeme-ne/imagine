@@ -63,6 +63,48 @@ const imageStyleOptions: ImageStyle[] = [
     alt: "Traditional sumi-e ink wash style",
     prompt: "1. Traditional sumi-e ink wash style\n2. Stark contrasts between black and white\n3. Balanced composition"
   },
+  {
+    id: "style7",
+    name: "MINIMALIST CORPORATE",
+    src: "/url-to-image/7.svg",
+    alt: "Clean minimalist corporate style",
+    prompt: "1. Minimalist corporate design\n2. Clean white space with single accent color\n3. Sans-serif typography with geometric layouts"
+  },
+  {
+    id: "style8",
+    name: "ISOMETRIC 3D",
+    src: "/url-to-image/8.svg",
+    alt: "Isometric 3D business illustration",
+    prompt: "1. Isometric 3D perspective\n2. Modern gradient colors on clean backgrounds\n3. Technical precision with depth and shadows"
+  },
+  {
+    id: "style9",
+    name: "BAUHAUS GEOMETRIC",
+    src: "/url-to-image/9.svg",
+    alt: "Bauhaus-inspired geometric design",
+    prompt: "1. Bauhaus geometric composition\n2. Primary colors with black grid lines\n3. Bold circles, triangles and rectangles"
+  },
+  {
+    id: "style10",
+    name: "INFOGRAPHIC FLOW",
+    src: "/url-to-image/10.svg",
+    alt: "Data visualization infographic style",
+    prompt: "1. Infographic data visualization\n2. Icons and charts with connecting flow lines\n3. Professional blue-gray palette with accent colors"
+  },
+  {
+    id: "style11",
+    name: "SWISS DESIGN",
+    src: "/url-to-image/11.svg",
+    alt: "Swiss international typography style",
+    prompt: "1. Swiss design grid system\n2. Helvetica typography with asymmetric balance\n3. High contrast black, white and red accents"
+  },
+  {
+    id: "style12",
+    name: "PHOTOREALISTIC PROFESSIONAL",
+    src: "/url-to-image/12.svg",
+    alt: "Photorealistic business photography",
+    prompt: "1. Photorealistic business photography\n2. Soft natural lighting with shallow depth of field\n3. Professional office environment with authentic details"
+  },
 ];
 
 // Add proper interface for the error type at the top of the file
@@ -656,7 +698,7 @@ The final prompt should read naturally as ONE complete instruction, not a list o
                 <p className="text-sm text-muted-foreground mb-6">
                   Choose a style for your generated image. Click the &quot;View Prompt&quot; button to see the style-specific prompt.
                 </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {imageStyleOptions.map((styleOption) => (
                     <div key={styleOption.id} className="space-y-2">
                       <button
