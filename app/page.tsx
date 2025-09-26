@@ -68,42 +68,42 @@ const imageStyleOptions: ImageStyle[] = [
     name: "MINIMALIST CORPORATE",
     src: "/url-to-image/7.svg",
     alt: "Clean minimalist corporate style",
-    prompt: "1. Minimalist corporate design\n2. Clean white space with single accent color\n3. Sans-serif typography with geometric layouts"
+    prompt: "1. White background with single blue accent, clean edges\n2. Neo-grotesque sans-serif, flush-left alignment\n3. Asymmetric blocks, 60% negative space, no gradients"
   },
   {
     id: "style8",
     name: "ISOMETRIC 3D",
     src: "/url-to-image/8.svg",
     alt: "Isometric 3D business illustration",
-    prompt: "1. Isometric 3D perspective\n2. Modern gradient colors on clean backgrounds\n3. Technical precision with depth and shadows"
+    prompt: "1. 30-degree angled geometric shapes, parallel projection\n2. Smooth gradient fills, calculated drop shadows\n3. Sharp vector edges, 2.5D depth illusion"
   },
   {
     id: "style9",
     name: "BAUHAUS GEOMETRIC",
     src: "/url-to-image/9.svg",
     alt: "Bauhaus-inspired geometric design",
-    prompt: "1. Bauhaus geometric composition\n2. Primary colors with black grid lines\n3. Bold circles, triangles and rectangles"
+    prompt: "1. Red square, blue circle, yellow triangle, black outlines\n2. Off-white background, asymmetric grid\n3. Bold geometric sans-serif uppercase, no textures"
   },
   {
     id: "style10",
     name: "INFOGRAPHIC FLOW",
     src: "/url-to-image/10.svg",
     alt: "Data visualization infographic style",
-    prompt: "1. Infographic data visualization\n2. Icons and charts with connecting flow lines\n3. Professional blue-gray palette with accent colors"
+    prompt: "1. Bar charts with connecting flow lines\n2. Blue-green-orange categorical palette\n3. Flat icons with percentage labels, no gradients"
   },
   {
     id: "style11",
     name: "SWISS DESIGN",
     src: "/url-to-image/11.svg",
     alt: "Swiss international typography style",
-    prompt: "1. Swiss design grid system\n2. Helvetica typography with asymmetric balance\n3. High contrast black, white and red accents"
+    prompt: "1. Large Helvetica black text on white, single red rectangle\n2. Flush-left ragged-right, strict grid alignment\n3. 70% white space, no ornaments, high contrast"
   },
   {
     id: "style12",
     name: "PHOTOREALISTIC PROFESSIONAL",
     src: "/url-to-image/12.svg",
     alt: "Photorealistic business photography",
-    prompt: "1. Photorealistic business photography\n2. Soft natural lighting with shallow depth of field\n3. Professional office environment with authentic details"
+    prompt: "1. Professional photography style\n2. Natural color grading\n3. High-definition realism"
   },
 ];
 
@@ -173,6 +173,30 @@ export default function UrlToImagePage() {
       window.history.replaceState(null, "", nextUrl);
     }
   }, []);
+  
+  // Handle style parameter from gallery
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const styleParam = params.get("style");
+    if (styleParam) {
+      // Convert style name to style ID
+      const matchingStyle = imageStyleOptions.find(
+        style => style.name.toLowerCase().replace(/ /g, '-').replace(/-ink-wash/g, '-ink-wash') === styleParam
+      );
+      if (matchingStyle) {
+        setSelectedStyleId(matchingStyle.id);
+        setStylePrompt(matchingStyle.prompt);
+        setCurrentStep(2); // Jump to style selection step
+        // Remove style param from URL
+        params.delete("style");
+        const search = params.toString();
+        const nextUrl = window.location.pathname + (search ? `?${search}` : "") + window.location.hash;
+        window.history.replaceState(null, "", nextUrl);
+      }
+    }
+  }, []);
+  
   // Load credits on mount and after purchase success
   useEffect(() => {
     const load = async () => {

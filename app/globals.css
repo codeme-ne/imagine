@@ -167,3 +167,8 @@
   animation-name: fade-up;
   animation-fill-mode: forwards;
 }
+
+/* Hide header on legal pages */
+body:has(.legal-page-layout) .header-wrapper {
+  display: none !important;
+}

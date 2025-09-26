@@ -1,0 +1,126 @@
+{
+  "items": [
+    {
+      "id": "1",
+      "title": "E-Commerce Fashion Store",
+      "beforeImage": "https://via.placeholder.com/600x400/e0e0e0/666?text=Original+Website",
+      "afterImage": "https://via.placeholder.com/600x400/4f46e5/fff?text=AI+Transformed",
+      "style": "GHIBLI",
+      "industry": "retail",
+      "useCase": "marketing",
+      "prompt": "Transform modern e-commerce fashion website into Studio Ghibli illustration style with soft pastel colors, hand-drawn aesthetic, whimsical characters shopping in a magical marketplace",
+      "dateCreated": "2024-12-15",
+      "likes": 234,
+      "views": 1250
+    },
+    {
+      "id": "2",
+      "title": "Tech Startup Landing",
+      "beforeImage": "https://via.placeholder.com/600x400/e0e0e0/666?text=Original+Website",
+      "afterImage": "https://via.placeholder.com/600x400/4f46e5/fff?text=AI+Transformed",
+      "style": "LEGO",
+      "industry": "technology",
+      "useCase": "presentation",
+      "prompt": "Convert tech startup landing page to LEGO brick construction style with bright primary colors, blocky interface elements, playful 3D appearance",
+      "dateCreated": "2024-12-14",
+      "likes": 189,
+      "views": 980
+    },
+    {
+      "id": "3",
+      "title": "Restaurant Menu Page",
+      "beforeImage": "https://via.placeholder.com/600x400/e0e0e0/666?text=Original+Website",
+      "afterImage": "https://via.placeholder.com/600x400/4f46e5/fff?text=AI+Transformed",
+      "style": "CLAYMATION",
+      "industry": "food",
+      "useCase": "marketing",
+      "prompt": "Reimagine restaurant menu page as claymation style with textured surfaces, stop-motion aesthetic, warm lighting, handcrafted feel",
+      "dateCreated": "2024-12-13",
+      "likes": 312,
+      "views": 1450
+    },
+    {
+      "id": "4",
+      "title": "Corporate Dashboard",
+      "beforeImage": "https://via.placeholder.com/600x400/e0e0e0/666?text=Original+Website",
+      "afterImage": "https://via.placeholder.com/600x400/4f46e5/fff?text=AI+Transformed",
+      "style": "LOGO",
+      "industry": "finance",
+      "useCase": "branding",
+      "prompt": "Simplify corporate dashboard to clean vector art logo style with flat colors, bold geometric shapes, minimalist icons",
+      "dateCreated": "2024-12-12",
+      "likes": 156,
+      "views": 720
+    },
+    {
+      "id": "5",
+      "title": "Educational Platform",
+      "beforeImage": "https://via.placeholder.com/600x400/e0e0e0/666?text=Original+Website",
+      "afterImage": "https://via.placeholder.com/600x400/4f46e5/fff?text=AI+Transformed",
+      "style": "WHIMSICAL",
+      "industry": "education",
+      "useCase": "presentation",
+      "prompt": "Transform educational platform into whimsical storybook illustration with soft pastel palette, playful shapes, hand-drawn elements",
+      "dateCreated": "2024-12-11",
+      "likes": 278,
+      "views": 1180
+    },
+    {
+      "id": "6",
+      "title": "News Portal Homepage",
+      "beforeImage": "https://via.placeholder.com/600x400/e0e0e0/666?text=Original+Website",
+      "afterImage": "https://via.placeholder.com/600x400/4f46e5/fff?text=AI+Transformed",
+      "style": "SUMI-E INK WASH",
+      "industry": "media",
+      "useCase": "editorial",
+      "prompt": "Reinterpret news portal as traditional sumi-e ink wash style with stark black and white contrasts, balanced composition, minimalist brush strokes",
+      "dateCreated": "2024-12-10",
+      "likes": 198,
+      "views": 890
+    },
+    {
+      "id": "7",
+      "title": "SaaS Product Page",
+      "beforeImage": "https://via.placeholder.com/600x400/e0e0e0/666?text=Original+Website",
+      "afterImage": "https://via.placeholder.com/600x400/4f46e5/fff?text=AI+Transformed",
+      "style": "GHIBLI",
+      "industry": "technology",
+      "useCase": "marketing",
+      "prompt": "Convert SaaS product page to Studio Ghibli style with nature elements, soft lighting, magical interface components",
+      "dateCreated": "2024-12-09",
+      "likes": 267,
+      "views": 1320
+    },
+    {
+      "id": "8",
+      "title": "Real Estate Listing",
+      "beforeImage": "https://via.placeholder.com/600x400/e0e0e0/666?text=Original+Website",
+      "afterImage": "https://via.placeholder.com/600x400/4f46e5/fff?text=AI+Transformed",
+      "style": "LEGO",
+      "industry": "real-estate",
+      "useCase": "branding",
+      "prompt": "Transform real estate listing into LEGO world with brick-built houses, colorful neighborhoods, playful property details",
+      "dateCreated": "2024-12-08",
+      "likes": 145,
+      "views": 680
+    },
+    {
+      "id": "9",
+      "title": "Healthcare Portal",
+      "beforeImage": "https://via.placeholder.com/600x400/e0e0e0/666?text=Original+Website",
+      "afterImage": "https://via.placeholder.com/600x400/4f46e5/fff?text=AI+Transformed",
+      "style": "WHIMSICAL",
+      "industry": "healthcare",
+      "useCase": "presentation",
+      "prompt": "Reimagine healthcare portal with whimsical illustrations, friendly characters, soft colors to reduce anxiety",
+      "dateCreated": "2024-12-07",
+      "likes": 223,
+      "views": 1050
+    }
+  ],
+  "filters": {
+    "styles": ["GHIBLI", "LEGO", "CLAYMATION", "LOGO", "WHIMSICAL", "SUMI-E INK WASH"],
+    "industries": ["retail", "technology", "food", "finance", "education", "media", "real-estate", "healthcare"],
+    "useCases": ["marketing", "presentation", "branding", "editorial"]
+  }
+}

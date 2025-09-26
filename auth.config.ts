@@ -1,5 +1,18 @@
 import type { NextAuthConfig } from 'next-auth';
 
+// Define all public pages that don't require authentication
+const publicPages = [
+  '/landing',
+  '/impressum',
+  '/datenschutz',
+  '/agb',
+  '/gallery',
+  '/pricing',
+  '/prompt-guide',
+  '/use-cases',
+  '/enterprise'
+];
+
 export const authConfig = {
   pages: {
     signIn: '/auth/signin',
@@ -14,19 +27,25 @@ export const authConfig = {
         return true;
       }
 
-      const isAppRoute = pathname === '/';
-      const isLandingRoute = pathname === '/landing';
+      // Check if the current path is a public page
+      const isPublicPage = publicPages.some(page => pathname.startsWith(page));
 
-      if (isAppRoute && !isLoggedIn) {
-        // Nicht angemeldet -> zur Landing umleiten
+      // Public pages are always accessible
+      if (isPublicPage) {
+        // Special case: redirect logged-in users from /landing to app
+        if (pathname === '/landing' && isLoggedIn) {
+          return Response.redirect(new URL('/', nextUrl));
+        }
+        return true;
+      }
+
+      // Protected route (including root '/') - require authentication
+      if (!isLoggedIn) {
+        // Not logged in -> redirect to landing
         return Response.redirect(new URL('/landing', nextUrl));
       }
 
-      if (isLandingRoute && isLoggedIn) {
-        // Angemeldet -> zur App umleiten
-        return Response.redirect(new URL('/', nextUrl));
-      }
-
+      // User is logged in and accessing protected route
       return true;
     },
   },
