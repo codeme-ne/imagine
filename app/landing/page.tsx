@@ -58,20 +58,20 @@ export default function LandingPage() {
   ];
 
   const stylePresets = [
-    { src: style01, label: "GHIBLI" },
-    { src: style02, label: "LEGO" },
-    { src: style03, label: "CLAYMATION" },
-    { src: style04, label: "LOGO" },
-    { src: style05, label: "WHIMSICAL" },
-    { src: style06, label: "SUMI-E INK WASH" },
-    { src: style07, label: "MINIMAL CORPORATE" },
-    { src: style08, label: "ISOMETRIC 3D" },
-    { src: style09, label: "PHOTOREALISTIC PROFESSIONAL" },
-    { src: style10, label: "GLASSMORPHIC MODERN" },
-    { src: style11, label: "BRUTALIST TECH" },
+    { src: style01, label: "GHIBLI", displayName: "Ghibli" },
+    { src: style02, label: "LEGO", displayName: "Lego" },
+    { src: style03, label: "CLAYMATION", displayName: "Claymation" },
+    { src: style04, label: "LOGO", displayName: "Logo" },
+    { src: style05, label: "WHIMSICAL", displayName: "Whimsical" },
+    { src: style06, label: "SUMI-E INK WASH", displayName: "Sumi-e Ink Wash" },
+    { src: style07, label: "MINIMAL CORPORATE", displayName: "Minimal Corporate" },
+    { src: style08, label: "ISOMETRIC 3D", displayName: "Isometric 3D" },
+    { src: style09, label: "PHOTOREALISTIC PROFESSIONAL", displayName: "Photorealistic Professional" },
+    { src: style10, label: "GLASSMORPHIC MODERN", displayName: "Glassmorphic Modern" },
+    { src: style11, label: "BRUTALIST TECH", displayName: "Brutalist Tech" },
   ] as const;
 
-  const styleNames = stylePresets.map((preset) => preset.label);
+  const styleNames = stylePresets.map((preset) => preset.displayName);
   const styleNamesList = styleNames.length > 1
     ? `${styleNames.slice(0, -1).join(", ")}, and ${styleNames[styleNames.length - 1]}`
     : styleNames[0] ?? "";
@@ -95,7 +95,7 @@ export default function LandingPage() {
                 </div>
               </div>
               <div className="mt-3">
-                <div className="flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs leading-tight text-muted-foreground">
                 {styleNames.map((style, index) => (
                   <span key={style} className="flex items-center gap-x-2">
                     {style}
