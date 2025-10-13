@@ -15,6 +15,8 @@ import {
 import { getUserId } from '@/lib/auth-utils';
 import { imagen4RequestSchema } from '@/lib/validations/api-schemas';
 import { handleNextError, ErrorType } from '@/lib/error-handler';
+import { isUserRateLimited } from '@/lib/user-rate-limit';
+import { fetchWithTimeout } from '@/lib/timeout-handler';
 
 interface FalImage {
   url: string;
@@ -65,6 +67,22 @@ export async function POST(request: NextRequest) {
         ErrorType.AUTHENTICATION,
         'imagen4-api'
       );
+    }
+
+    // Per-user rate limiting: 50 images per hour (in addition to IP-based limits)
+    const userRateLimit = await isUserRateLimited(userId, 'imagen4', 50, '1 h');
+    if (!userRateLimit.success) {
+      return NextResponse.json({ 
+        error: 'User rate limit exceeded. Please try again later.',
+        remaining: userRateLimit.remaining,
+      }, { 
+        status: 429,
+        headers: {
+          'X-RateLimit-Limit': userRateLimit.limit.toString(),
+          'X-RateLimit-Remaining': userRateLimit.remaining.toString(),
+          'X-RateLimit-Reset': userRateLimit.reset ? new Date(userRateLimit.reset).toISOString() : '',
+        }
+      });
     }
 
     // Grant free trial (1 credit) once per user on first use
@@ -186,7 +204,8 @@ export async function POST(request: NextRequest) {
     const imageContentType = images[0].content_type;
 
 
-    const imageResponse = await fetch(imageUrl);
+    // Fetch the image with a 30-second timeout
+    const imageResponse = await fetchWithTimeout(imageUrl, {}, 30000);
     if (!imageResponse.ok) {
       await refund(userId, 1);
       return handleNextError(
