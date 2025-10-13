@@ -3,6 +3,9 @@ import FirecrawlApp from '@mendable/firecrawl-js';
 import { isRateLimited } from '@/lib/rate-limit';
 import { auth } from '@/auth';
 import { ensureTrial, getCredits } from '@/lib/credits';
+import { getUserId } from '@/lib/auth-utils';
+import { scrapeRequestSchema } from '@/lib/validations/api-schemas';
+import { handleNextError, ErrorType } from '@/lib/error-handler';
 
 // Ensure we run on Node.js runtime (Firecrawl SDK requires Node APIs) and avoid caching
 export const runtime = 'nodejs';
@@ -48,31 +51,29 @@ async function scrapeDirect(url: string, params: Record<string, unknown>, apiKey
 }
 
 export async function POST(request: NextRequest) {
-  const rateLimit = await isRateLimited(request, 'scrape');
-  
-  if (!rateLimit.success) {
-    return NextResponse.json({ 
-      success: false,
-      error: 'Rate limit exceeded. Please try again later.' 
-    }, { 
-      status: 429,
-      headers: {
-        'X-RateLimit-Limit': rateLimit.limit.toString(),
-        'X-RateLimit-Remaining': rateLimit.remaining.toString(),
-      }
-    });
-  }
+  try {
+    const rateLimit = await isRateLimited(request, 'scrape');
+    
+    if (!rateLimit.success) {
+      return handleNextError(
+        new Error('Rate limit exceeded'),
+        ErrorType.RATE_LIMIT,
+        'scrape-api',
+        { limit: rateLimit.limit, remaining: rateLimit.remaining }
+      );
+    }
 
-  // Enforce auth + credits gating before using Firecrawl
-  const session = await auth();
-  if (!session?.user) {
-    return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
-  }
-  const user = session.user as { id?: string; email?: string };
-  const userId = user.id || user.email || '';
-  if (!userId) {
-    return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
-  }
+    // Enforce auth + credits gating before using Firecrawl
+    const session = await auth();
+    const userId = getUserId(session);
+    
+    if (!userId) {
+      return handleNextError(
+        new Error('User not authenticated'),
+        ErrorType.AUTHENTICATION,
+        'scrape-api'
+      );
+    }
   await ensureTrial(userId, 1);
   const balance = await getCredits(userId);
   if (balance <= 0) {
@@ -94,9 +95,32 @@ export async function POST(request: NextRequest) {
     apiKey = headerApiKey;
   }
 
-  try {
+    // Validate request body
+    let body: ScrapeRequestBody;
+    try {
+      const rawBody = await request.json();
+      const validated = scrapeRequestSchema.safeParse(rawBody);
+      
+      if (!validated.success) {
+        return handleNextError(
+          new Error(validated.error.errors[0]?.message || 'Invalid request'),
+          ErrorType.VALIDATION,
+          'scrape-api',
+          { errors: validated.error.errors }
+        );
+      }
+      
+      body = validated.data as ScrapeRequestBody;
+    } catch (parseError) {
+      return handleNextError(
+        parseError,
+        ErrorType.VALIDATION,
+        'scrape-api',
+        { message: 'Failed to parse request body' }
+      );
+    }
+
     const app = new FirecrawlApp({ apiKey });
-    const body = await request.json() as ScrapeRequestBody;
     const { url, urls, ...params } = body;
 
     let result: ScrapeResult | null | undefined;
@@ -166,38 +190,31 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(result as ScrapeResult);
 
   } catch (error: unknown) {
-    // Try to surface as much detail as safely possible without leaking secrets
-    console.error('Error in /api/scrape endpoint (SDK):', error);
     const err = error as ApiError;
     const rawMessage = (err && typeof err.message === 'string') ? err.message : '';
-    // Some SDK errors include nested response/status info
-    const statusFromErr = (() => {
-      try {
-        const anyErr = err as unknown as Record<string, unknown>;
-        const resp = anyErr && typeof anyErr === 'object' ? (anyErr.response as Record<string, unknown> | undefined) : undefined;
-        const status = resp && typeof resp.status === 'number' ? resp.status : (typeof (anyErr.status) === 'number' ? (anyErr.status as number) : undefined);
-        return status;
-      } catch { return undefined; }
-    })();
-
+    
     // Heuristic mapping for common Firecrawl quota/credits/rate errors
     const isQuota = /quota|credit|payment required|402/i.test(rawMessage);
     const isRateLimit = /rate.?limit|too many requests|429/i.test(rawMessage);
 
-    const errorStatus = isQuota
-      ? 402
-      : isRateLimit
-        ? 429
-        : (typeof statusFromErr === 'number' && statusFromErr >= 400 ? statusFromErr : (typeof err.status === 'number' && err.status >= 400 ? err.status : 502));
+    if (isQuota) {
+      return handleNextError(
+        error,
+        ErrorType.API_ERROR,
+        'scrape-api',
+        { message: 'Firecrawl credits exhausted' }
+      );
+    }
+    
+    if (isRateLimit) {
+      return handleNextError(
+        error,
+        ErrorType.RATE_LIMIT,
+        'scrape-api',
+        { message: 'Firecrawl rate limit reached' }
+      );
+    }
 
-    const errorMessage = isQuota
-      ? 'Firecrawl credits exhausted. Add credits or provide a key with available quota.'
-      : isRateLimit
-        ? 'Firecrawl rate limit reached. Please try again shortly.'
-        : (process.env.NODE_ENV !== 'production'
-            ? `An error occurred while processing your request. ${rawMessage || 'Please try again later.'}`
-            : 'An error occurred while processing your request. Please try again later.');
-
-    return NextResponse.json({ success: false, error: errorMessage }, { status: errorStatus });
+    return handleNextError(error, ErrorType.API_ERROR, 'scrape-api');
   }
 } 

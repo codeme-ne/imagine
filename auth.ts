@@ -32,11 +32,37 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   secret: authSecret,
   adapter: UpstashRedisAdapter(redis),
   // Stellt sicher, dass die Middleware den Login-Zustand ohne DB-Zugriff erkennt
-  session: { strategy: "jwt" },
+  session: { 
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+    updateAge: 24 * 60 * 60, // 24 hours
+  },
+  // Enhanced JWT configuration
+  jwt: {
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
   providers: [
     Resend({
       apiKey: resendApiKey!,
       from: emailFrom!,
     }),
   ],
+  // Security callbacks
+  callbacks: {
+    ...authConfig.callbacks,
+    async jwt({ token, user, account }) {
+      // Add user ID to token on sign in
+      if (user) {
+        token.userId = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      // Add user ID to session from token
+      if (session.user && token.userId) {
+        (session.user as { id?: string }).id = token.userId as string;
+      }
+      return session;
+    },
+  },
 })
