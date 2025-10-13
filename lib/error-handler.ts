@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { NextResponse } from 'next/server';
+import { sanitizeErrorMessage, sanitizeObject } from './response-sanitizer';
 
 // Define error types for consistent user-facing messages
 export enum ErrorType {
@@ -44,10 +45,12 @@ export function handleError(
   // Generate a correlation ID for tracing
   const correlationId = uuidv4();
   
-  // Get error message if available
-  const errorMessage = error instanceof Error ? error.message : String(error);
+  // Get error message if available and sanitize it
+  const rawErrorMessage = error instanceof Error ? error.message : String(error);
+  const errorMessage = sanitizeErrorMessage(rawErrorMessage);
   
-  // Build the log object with all relevant information
+  // Build the log object with all relevant information (sanitized)
+  const sanitizedInfo = sanitizeObject(additionalInfo) as Record<string, unknown>;
   const logData = {
     timestamp: new Date().toISOString(),
     correlationId,
@@ -55,7 +58,7 @@ export function handleError(
     errorType,
     errorMessage,
     stack: error instanceof Error ? error.stack : undefined,
-    ...additionalInfo
+    ...sanitizedInfo
   };
   
   // Log the full error details for debugging

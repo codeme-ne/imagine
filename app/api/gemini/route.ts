@@ -4,6 +4,9 @@ import { streamText } from 'ai';
 import { isRateLimited } from '@/lib/rate-limit';
 import { auth } from '@/auth';
 import { ensureTrial, getCredits } from '@/lib/credits';
+import { getUserId } from '@/lib/auth-utils';
+import { geminiRequestSchema } from '@/lib/validations/api-schemas';
+import { handleEdgeError, ErrorType } from '@/lib/error-handler';
 import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
@@ -12,48 +15,60 @@ export async function POST(req: NextRequest) {
   try {
     const rateLimit = await isRateLimited(req, 'gemini');
     if (!rateLimit.success) {
-      return new Response(
-        JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }),
-        {
-          status: 429,
-          headers: {
-            'Content-Type': 'application/json',
-            'X-RateLimit-Limit': rateLimit.limit.toString(),
-            'X-RateLimit-Remaining': rateLimit.remaining.toString(),
-          },
-        },
+      return handleEdgeError(
+        new Error('Rate limit exceeded'),
+        ErrorType.RATE_LIMIT,
+        'gemini-api',
+        { limit: rateLimit.limit, remaining: rateLimit.remaining }
       );
     }
 
     // Enforce auth + credits gating (no debit here, just gate expensive ops)
     const session = await auth();
-    if (!session?.user) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { 'Content-Type': 'application/json' } });
-    }
-    const user = session.user as { id?: string; email?: string };
-    const userId = user.id || user.email || '';
+    const userId = getUserId(session);
+    
     if (!userId) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { 'Content-Type': 'application/json' } });
+      return handleEdgeError(
+        new Error('User not authenticated'),
+        ErrorType.AUTHENTICATION,
+        'gemini-api'
+      );
     }
     // Grant 1 trial credit once (Imagen will actually debit; here we just make sure badge initializes)
     await ensureTrial(userId, 1);
     const creditBalance = await getCredits(userId);
     if (creditBalance <= 0) {
-      return new Response(JSON.stringify({ error: 'You are out of credits. Buy credits to continue.' }), {
-        status: 402,
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Credits-Remaining': '0',
-        },
-      });
+      return handleEdgeError(
+        new Error('Insufficient credits'),
+        ErrorType.AUTHORIZATION,
+        'gemini-api',
+        { credits: creditBalance }
+      );
     }
 
-    const { prompt } = await req.json();
-    if (!prompt) {
-      return new Response(JSON.stringify({ error: 'Prompt is required' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
+    // Validate request body
+    let prompt: string;
+    try {
+      const rawBody = await req.json();
+      const validated = geminiRequestSchema.safeParse(rawBody);
+      
+      if (!validated.success) {
+        return handleEdgeError(
+          new Error(validated.error.errors[0]?.message || 'Invalid request'),
+          ErrorType.VALIDATION,
+          'gemini-api',
+          { errors: validated.error.errors }
+        );
+      }
+      
+      prompt = validated.data.prompt;
+    } catch (parseError) {
+      return handleEdgeError(
+        parseError,
+        ErrorType.VALIDATION,
+        'gemini-api',
+        { message: 'Failed to parse request body' }
+      );
     }
 
     // API-Key Auflösung: Header > ENV (GEMINI_API_KEY | GOOGLE_GENERATIVE_AI_API_KEY)
@@ -66,12 +81,10 @@ export async function POST(req: NextRequest) {
 
     const apiKey = headerApiKey || envApiKey;
     if (!apiKey) {
-      return new Response(
-        JSON.stringify({
-          error:
-            'Gemini API key missing. Provide X-Gemini-API-Key header or set GEMINI_API_KEY / GOOGLE_GENERATIVE_AI_API_KEY in .env.local',
-        }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } },
+      return handleEdgeError(
+        new Error('Gemini API key not configured'),
+        ErrorType.SERVER_ERROR,
+        'gemini-api'
       );
     }
 
@@ -284,14 +297,6 @@ export async function POST(req: NextRequest) {
       },
     });
   } catch (error: unknown) {
-    const err = error as Error;
-    console.error('Error in Gemini API route:', err);
-    return new Response(
-      JSON.stringify({ error: 'An error occurred while processing your request. Please try again later.' }),
-      {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      },
-    );
+    return handleEdgeError(error, ErrorType.API_ERROR, 'gemini-api');
   }
 }

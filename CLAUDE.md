@@ -19,6 +19,43 @@ This is a Next.js 15 application that transforms websites into beautiful AI-gene
 
 **Always run `npm run lint` before committing changes.**
 
+## Security Guidelines
+
+### Input Validation
+- **ALL** API routes must validate inputs using Zod schemas from `lib/validations/`
+- URLs must be validated for protocol, length, and private network access
+- Prompt lengths are enforced (5KB for Imagen4, 50KB for Gemini)
+- Use `scrapeRequestSchema`, `geminiRequestSchema`, or `imagen4RequestSchema`
+
+### Authentication & Authorization
+- Use `getUserId()` from `lib/auth-utils.ts` to safely extract user IDs
+- Never trust raw session data without validation
+- Session timeout: 30 days with 24-hour update intervals
+- All protected routes require valid session
+
+### Error Handling
+- Use `handleNextError()` or `handleEdgeError()` from `lib/error-handler.ts`
+- Never expose stack traces or sensitive data in error responses
+- All errors include correlation IDs for tracing
+- Error messages are automatically sanitized to remove API keys/tokens
+
+### Rate Limiting
+- IP-based rate limiting: 50 requests/day per endpoint (Upstash Redis)
+- User-based rate limiting: 50 images/hour for Imagen4 (resource-intensive)
+- Rate limits fail-open if Redis is unavailable (development/errors)
+- Custom limits can be configured in `lib/security-constants.ts`
+
+### API Security
+- Timeout all external API calls (30s for images, 60s for scraping)
+- Use `fetchWithTimeout()` from `lib/timeout-handler.ts`
+- Sanitize all API responses with `sanitizeObject()` before logging
+- Never log API keys, tokens, or credentials
+
+### Security Headers
+- All routes have security headers (X-Frame-Options, CSP, etc.)
+- Content Security Policy restricts external resources
+- Configured in `next.config.ts` headers function
+
 ## Architecture Overview
 
 ### Core Workflow
