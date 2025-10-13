@@ -253,7 +253,7 @@ export async function POST(request: NextRequest) {
 ## 🚨 Security Incidents
 
 ### Reporting
-If you discover a security vulnerability, please email security@example.com instead of opening a public issue.
+If you discover a security vulnerability, please email **[security@yourdomain.com]** (update with your actual security email) instead of opening a public issue.
 
 ### Response Process
 1. Acknowledge receipt within 24 hours

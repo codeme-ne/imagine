@@ -137,8 +137,9 @@ curl https://yourdomain.com/api/invalid-endpoint
 
 ### Verification
 ```bash
-# Check no API keys in client bundle
-curl https://yourdomain.com/_next/static/chunks/*.js | grep -i "api_key\|apikey\|secret"
+# Check no API keys in client bundle (adapt this command for your specific deployment)
+# Example: Download specific chunk files and search for sensitive patterns
+curl https://yourdomain.com/_next/static/chunks/main-[hash].js | grep -i "api_key\|apikey\|secret"
 # Should return nothing
 ```
 
@@ -271,8 +272,10 @@ curl -I https://yourdomain.com | grep -i "content-security-policy"
 
 ## 📝 Security Contacts
 
-- Security team email: security@yourdomain.com
-- Incident response: incidents@yourdomain.com
+**⚠️ Update these with your actual contact information:**
+
+- Security team email: **[security@yourdomain.com]**
+- Incident response: **[incidents@yourdomain.com]**
 - Upstash support: https://upstash.com/support
 - Vercel support: https://vercel.com/support
 
