@@ -17,6 +17,5 @@ The following inline TODOs were added to the codebase:
 
 Use `grep -rn "TODO:" --include="*.ts" --include="*.tsx" .` to find all TODOs.
 
-## Set Up Test Infrastructure - 2025-11-26 06:48
-
-- **Configure Vitest and Testing Library** - Initialize test framework for API routes and utilities. **Problem:** Project has zero tests despite handling billing (credits, Stripe webhooks) and security-sensitive code (SSRF validation). The 5 inline TODOs above all require a test runner first. **Files:** `package.json` (add devDeps), `vitest.config.ts` (new), `lib/credits.ts:57-109` (Lua script needs tests), `app/api/scrape/route.ts:37-133` (validateUrl function needs tests). **Solution:** Use Vitest + msw for API mocking; prioritize credits.ts and validateUrl tests first since they handle money and security.
+<!-- Resolved: Gemini model updated to gemini-2.5-flash (commit pending) -->
+<!-- Resolved: Test infrastructure set up with Vitest, 72 tests passing (commit 0fae52a) -->

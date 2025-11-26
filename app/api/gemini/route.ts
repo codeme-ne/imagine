@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
       process.env.GOOGLE_MODEL_ID ||
       undefined;
     // Prefer a thinking-capable default model so reasoning streams when available
-    const modelId = headerModel || envModel || 'gemini-2.5-flash-preview-05-20';
+    const modelId = headerModel || envModel || 'gemini-2.5-flash';
 
     // -------------- AI call with streaming --------------
     // Create a provider instance with the resolved API key
