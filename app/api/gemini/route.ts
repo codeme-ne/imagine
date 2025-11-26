@@ -56,20 +56,16 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // API-Key Auflösung: Header > ENV (GEMINI_API_KEY | GOOGLE_GENERATIVE_AI_API_KEY)
-    const headerApiKey = req.headers.get('X-Gemini-API-Key') || undefined;
-    const envApiKey =
+    const apiKey =
       process.env.GEMINI_API_KEY ||
       process.env.GOOGLE_GENERATIVE_AI_API_KEY ||
       process.env.GOOGLE_API_KEY ||
       undefined;
 
-    const apiKey = headerApiKey || envApiKey;
     if (!apiKey) {
       return new Response(
         JSON.stringify({
-          error:
-            'Gemini API key missing. Provide X-Gemini-API-Key header or set GEMINI_API_KEY / GOOGLE_GENERATIVE_AI_API_KEY in .env.local',
+          error: 'API configuration error. Please try again later or contact support.',
         }),
         { status: 500, headers: { 'Content-Type': 'application/json' } },
       );

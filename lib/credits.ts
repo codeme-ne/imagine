@@ -1,4 +1,5 @@
 import { Redis } from "@upstash/redis";
+import { createHash } from "crypto";
 
 // Centralized Redis instance from env
 const redis = Redis.fromEnv();
@@ -67,10 +68,35 @@ export async function tryDebit(
     }
   }
 
-  const newBal = await redis.decrby(kCredits(userId), amount);
-  if (newBal < 0) {
-    await redis.incrby(kCredits(userId), amount); // revert
-    return { ok: false, remaining: 0, reason: "insufficient-credits" };
+  // Atomic check-and-decrement using Lua script
+  // Returns: new balance if successful, -1 if insufficient credits
+  const luaScript = `
+    local key = KEYS[1]
+    local amount = tonumber(ARGV[1])
+    local current = redis.call('GET', key)
+
+    if current == false then
+      current = 0
+    else
+      current = tonumber(current)
+    end
+
+    if current >= amount then
+      return redis.call('DECRBY', key, amount)
+    else
+      return -1
+    end
+  `;
+
+  const result = await redis.eval(
+    luaScript,
+    [kCredits(userId)],
+    [amount.toString()]
+  ) as number;
+
+  if (result === -1) {
+    const currentBalance = await getCredits(userId);
+    return { ok: false, remaining: currentBalance, reason: "insufficient-credits" };
   }
 
   // increment daily usage and set TTL to end-of-day (~48h safety)
@@ -80,7 +106,7 @@ export async function tryDebit(
   await redis.expire(key, 172800);
   const dailyRemaining = Number.isFinite(dailyCap) ? Math.max(0, (dailyCap as number) - used) : undefined;
 
-  return { ok: true, remaining: newBal, dailyRemaining };
+  return { ok: true, remaining: result, dailyRemaining };
 }
 
 export async function refund(userId: string, amount: number): Promise<number> {
@@ -88,15 +114,7 @@ export async function refund(userId: string, amount: number): Promise<number> {
 }
 
 export function sessionHashFromPrompt(prompt: string): string {
-  // DJB2 hash (string → 32-bit) then hex
-  let h = 5381;
-  for (let i = 0; i < prompt.length; i++) {
-    h = ((h << 5) + h) + prompt.charCodeAt(i);
-    h |= 0; // force 32-bit
-  }
-  // Convert to unsigned and hex; pad to 8
-  const hex = (h >>> 0).toString(16).padStart(8, '0');
-  return hex;
+  return createHash('sha256').update(prompt).digest('hex').slice(0, 16);
 }
 
 export async function getRegenCount(userId: string, sessionHash: string): Promise<number> {

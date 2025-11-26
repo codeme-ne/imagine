@@ -67,18 +67,12 @@ export async function POST(request: NextRequest) {
   // Grant free trial (1 credit) once per user on first use
   await ensureTrial(userId, 1);
 
-  let apiKey = process.env.FAL_KEY;
-  
+  const apiKey = process.env.FAL_KEY;
+
   if (!apiKey) {
-    const headerApiKey = request.headers.get('X-Fal-API-Key');
-    
-    if (!headerApiKey) {
-      return NextResponse.json({ 
-        error: 'API configuration error. Please try again later or contact support.' 
-      }, { status: 500 });
-    }
-    
-    apiKey = headerApiKey;
+    return NextResponse.json({
+      error: 'API configuration error. Please try again later or contact support.'
+    }, { status: 500 });
   }
   
   fal.config({

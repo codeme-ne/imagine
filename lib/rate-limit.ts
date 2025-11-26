@@ -32,21 +32,48 @@ export const getRateLimiter = (endpoint: string) => {
   }
 };
 
-// Helper function to get the IP from a NextRequest or default to a placeholder
+/**
+ * Securely extracts the client IP address from a NextRequest.
+ *
+ * Security considerations:
+ * - Only trusts proxy headers when TRUSTED_PROXY=true (production deployment)
+ * - Prioritizes Vercel's x-vercel-ip header which cannot be spoofed by clients
+ * - Falls back to NextRequest.ip or a consistent identifier to prevent bypass
+ *
+ * @param request - The incoming NextRequest
+ * @returns The client IP address or a consistent fallback identifier
+ */
 export const getIP = (request: NextRequest): string => {
-  const forwarded = request.headers.get("x-forwarded-for");
-  const realIp = request.headers.get("x-real-ip");
-  
-  if (forwarded) {
-    return forwarded.split(/, /)[0];
+  const isTrustedProxy = process.env.TRUSTED_PROXY === "true";
+
+  // 1. Vercel's infrastructure sets x-vercel-ip securely (cannot be spoofed by clients)
+  const vercelIp = request.headers.get("x-vercel-ip");
+  if (vercelIp) {
+    return vercelIp;
   }
-  
-  if (realIp) {
-    return realIp;
+
+  // 2. Only trust proxy headers when explicitly configured (e.g., production behind Vercel/CloudFlare)
+  if (isTrustedProxy) {
+    const forwarded = request.headers.get("x-forwarded-for");
+    if (forwarded) {
+      // Take the first IP in the chain (the original client)
+      return forwarded.split(/\s*,\s*/)[0];
+    }
+
+    const realIp = request.headers.get("x-real-ip");
+    if (realIp) {
+      return realIp;
+    }
   }
-  
-  // Default to placeholder IP if none found
-  return "127.0.0.1";
+
+  // 3. Use NextRequest's ip property if available (direct connection)
+  if (request.ip) {
+    return request.ip;
+  }
+
+  // 4. Fallback to a consistent identifier to prevent complete bypass
+  // This ensures rate limiting still works even if IP detection fails
+  return "unknown-client";
 };
 
 // Helper function to check if a request is rate limited
