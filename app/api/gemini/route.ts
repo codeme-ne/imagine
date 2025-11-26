@@ -6,6 +6,9 @@ import { auth } from '@/auth';
 import { ensureTrial, getCredits } from '@/lib/credits';
 import { NextRequest } from 'next/server';
 
+// NOTE: [Performance] Caching considered but not implemented - streaming responses + unique prompts per URL make caching overhead > benefit
+// Trade-off analysis: Would require buffering entire stream before caching, prompts are typically unique per URL, users expect fresh generations
+
 export const runtime = 'edge';
 
 export async function POST(req: NextRequest) {

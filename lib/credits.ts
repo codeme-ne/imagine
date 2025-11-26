@@ -3,6 +3,29 @@ import { Redis } from "@upstash/redis";
 // Centralized Redis instance from env
 const redis = Redis.fromEnv();
 
+// Structured logging helper for credit operations audit trail
+type CreditLogData = {
+  timestamp: string;
+  operation: string;
+  userId: string;
+  amount?: number;
+  newBalance?: number;
+  remaining?: number;
+  success?: boolean;
+  reason?: string;
+  granted?: boolean;
+};
+
+function logCreditOp(data: CreditLogData): void {
+  const shouldLog = process.env.NODE_ENV === "production" || process.env.DEBUG_CREDITS === "true";
+  if (!shouldLog) return;
+
+  console.log(JSON.stringify({
+    ...data,
+    timestamp: new Date().toISOString(),
+  }));
+}
+
 // Key helpers
 const kCredits = (userId: string) => `credits:${userId}`;
 const kTrialGranted = (userId: string) => `trial:granted:${userId}`;
@@ -31,6 +54,15 @@ export async function getCredits(userId: string): Promise<number> {
 
 export async function awardCredits(userId: string, amount: number): Promise<number> {
   const newBal = await redis.incrby(kCredits(userId), amount);
+
+  logCreditOp({
+    timestamp: "",
+    operation: "awardCredits",
+    userId,
+    amount,
+    newBalance: newBal,
+  });
+
   return newBal;
 }
 
@@ -38,9 +70,27 @@ export async function ensureTrial(userId: string, trialCredits = 2): Promise<{ g
   const set = await redis.set(kTrialGranted(userId), "1", { nx: true });
   if (set === "OK") {
     const bal = await awardCredits(userId, trialCredits);
+
+    logCreditOp({
+      timestamp: "",
+      operation: "ensureTrial",
+      userId,
+      granted: true,
+      newBalance: bal,
+    });
+
     return { granted: true, balance: bal };
   }
   const bal = await getCredits(userId);
+
+  logCreditOp({
+    timestamp: "",
+    operation: "ensureTrial",
+    userId,
+    granted: false,
+    newBalance: bal,
+  });
+
   return { granted: false, balance: bal };
 }
 
@@ -63,7 +113,19 @@ export async function tryDebit(
   if (Number.isFinite(dailyCap)) {
     const remainingToday = await getDailyRemaining(userId, dailyCap as number);
     if (remainingToday < amount) {
-      return { ok: false, remaining: await getCredits(userId), dailyRemaining: remainingToday, reason: "daily-cap-exceeded" };
+      const remaining = await getCredits(userId);
+
+      logCreditOp({
+        timestamp: "",
+        operation: "tryDebit",
+        userId,
+        amount,
+        success: false,
+        reason: "daily-cap-exceeded",
+        remaining,
+      });
+
+      return { ok: false, remaining, dailyRemaining: remainingToday, reason: "daily-cap-exceeded" };
     }
   }
 
@@ -95,6 +157,17 @@ export async function tryDebit(
 
   if (result === -1) {
     const currentBalance = await getCredits(userId);
+
+    logCreditOp({
+      timestamp: "",
+      operation: "tryDebit",
+      userId,
+      amount,
+      success: false,
+      reason: "insufficient-credits",
+      remaining: currentBalance,
+    });
+
     return { ok: false, remaining: currentBalance, reason: "insufficient-credits" };
   }
 
@@ -105,11 +178,30 @@ export async function tryDebit(
   await redis.expire(key, 172800);
   const dailyRemaining = Number.isFinite(dailyCap) ? Math.max(0, (dailyCap as number) - used) : undefined;
 
+  logCreditOp({
+    timestamp: "",
+    operation: "tryDebit",
+    userId,
+    amount,
+    success: true,
+    remaining: result,
+  });
+
   return { ok: true, remaining: result, dailyRemaining };
 }
 
 export async function refund(userId: string, amount: number): Promise<number> {
-  return await awardCredits(userId, amount);
+  const newBal = await awardCredits(userId, amount);
+
+  logCreditOp({
+    timestamp: "",
+    operation: "refund",
+    userId,
+    amount,
+    newBalance: newBal,
+  });
+
+  return newBal;
 }
 
 /**
