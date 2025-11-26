@@ -66,12 +66,7 @@ export const getIP = (request: NextRequest): string => {
     }
   }
 
-  // 3. Use NextRequest's ip property if available (direct connection)
-  if (request.ip) {
-    return request.ip;
-  }
-
-  // 4. Fallback to a consistent identifier to prevent complete bypass
+  // 3. Fallback to a consistent identifier to prevent complete bypass
   // This ensures rate limiting still works even if IP detection fails
   return "unknown-client";
 };
