@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Regeneration policy: limit to 1 initial + 3 extra for the same prompt (rolling 24h)
-    const sessionHash = sessionHashFromPrompt(prompt);
+    const sessionHash = await sessionHashFromPrompt(prompt);
     const currentCount = await getRegenCount(userId, sessionHash);
     if (currentCount >= MAX_TOTAL_PER_PROMPT) {
       return NextResponse.json({

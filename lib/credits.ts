@@ -1,5 +1,4 @@
 import { Redis } from "@upstash/redis";
-import { createHash } from "crypto";
 
 // Centralized Redis instance from env
 const redis = Redis.fromEnv();
@@ -113,8 +112,18 @@ export async function refund(userId: string, amount: number): Promise<number> {
   return await awardCredits(userId, amount);
 }
 
-export function sessionHashFromPrompt(prompt: string): string {
-  return createHash('sha256').update(prompt).digest('hex').slice(0, 16);
+/**
+ * Generate a hash from a prompt string using Web Crypto API (Edge-compatible)
+ * Falls back to FNV-1a hash for sync contexts
+ */
+export async function sessionHashFromPrompt(prompt: string): Promise<string> {
+  // Use Web Crypto API (available in Edge runtime)
+  const encoder = new TextEncoder();
+  const data = encoder.encode(prompt);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashHex.slice(0, 16);
 }
 
 export async function getRegenCount(userId: string, sessionHash: string): Promise<number> {
